@@ -1,6 +1,6 @@
 const config = {
     database: {
-        uri: "mongodb://127.0.0.1:27017/login_database",
+        uri: "mongodb://127.0.0.1:27017/user_db",
         options: {useMongoClient: true}
     },
     log: {
@@ -27,10 +27,10 @@ const config = {
         }
     },
     jwt: {
-        secretKey: "somethingtopsecret",
+        secretKey: "hqF65AiumUo=",
         headerScheme: "jwt"
     }
 };
 
-export default config;
+// export default config;
 export const {database, log, jwt} = config;
