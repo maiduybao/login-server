@@ -55,7 +55,8 @@ passportStrategy(passport);
 // allow for cross-origin API requests
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Credentials", "true");
+    // Set to true if you want web client to include the cookie in the requests send
+    res.header("Access-Control-Allow-Credentials", false);
     res.header("Access-Control-Allow-Headers",
         "Content-Type, Accept, Authorization, Content-Length, X-Requested-With");
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");

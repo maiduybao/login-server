@@ -20,7 +20,6 @@
     "mongoose": "^4.11.8",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
-    "pem": "^1.9.7",
     "rsvp": "^4.6.1",
     "serve-favicon": "~2.4.2"
   },
@@ -32,7 +31,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
-    "eslint": "^4.5.0",
+    "eslint": "^4.6.0",
     "file-loader": "^0.11.2",
     "webpack": "^3.5.5",
     "webpack-node-externals": "^1.6.0"
