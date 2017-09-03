@@ -1,9 +1,10 @@
-"use strict";
+import express from "express";
+import UserController from "../controllers/userController";
 
-const express = require("express");
 const router = express.Router();
 
-/* GET users listing. */
-router.get("/", (req, res) => res.send("respond with a resource"));
+router.post("/register", UserController.register);
+
+router.post("/authenticate", UserController.authenticate);
 
 module.exports = router;

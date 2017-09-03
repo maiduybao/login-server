@@ -1,6 +1,4 @@
 import express from "express";
-import expressValidator from "express-validator";
-
 import path from "path";
 
 // const favicon = require("serve-favicon");
@@ -14,8 +12,8 @@ import passport from "passport";
 import {database as dbConfig, log as logConfig} from "./config/config";
 import passportStrategy from "./passport";
 
-import index from "./routes/index";
-//  import users from "./routes/users";
+// import index from "./routes/index";
+// import users from "./routes/users";
 import api from "./routes/api";
 
 mongoose.Promise = rsvp.Promise;
@@ -39,7 +37,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(expressValidator());
 
 // initialize passport
 app.use(passport.initialize());
@@ -68,7 +65,7 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.use("/", index);
+// app.use("/", index);
 //  app.use("/users", users);
 app.use("/api", api);
 app.get("/ping", (req, res) => {

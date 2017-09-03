@@ -14,15 +14,17 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    role: {
-        type: String,
-        enum: [
-            "Client",
-            "Manager",
-            "Admin"
-        ],
-        default: "Client",
-    },
+    roles: [
+        {
+            type: String,
+            enum: [
+                "Client",
+                "Manager",
+                "Admin"
+            ],
+            default: "Client",
+        }
+    ],
 });
 
 // Save user hash password
@@ -41,6 +43,10 @@ UserSchema.pre("save", function (next) {
                 next();
             });
         });
+
+        if (this.roles.length === 0) {
+            this.roles.push("Client");
+        }
     } else {
         return next();
     }
