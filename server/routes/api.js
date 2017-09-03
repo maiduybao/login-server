@@ -41,49 +41,67 @@ router.post("/register", (req, res) => {
 // Authenticate user
 router.post("/authenticate", (req, res) => {
     logger.debug("This is in the user authentication");
-    User.findOne({email: req.body.email}, (error1, user) => {
-        if (error1) {
-            logger.error(error1);
-            throw error1;
-        }
-        if (user) {
-            user.comparePassword(req.body.password, (error2, isMatch) => {
-                if (error2) {
-                    logger.error(error2);
-                    throw error2;
-                }
-                if (isMatch) {
-                    const token = jwt.sign(user, jwtConfig.secretKey, {expiresIn: 1000});
 
-                    res.json({
-                        success: true,
-                        payload: {
-                            token: `JWT ${token}`,
-                            user: {
-                                id: user._id,
-                                email: user.email,
+    req.checkBody("email", "Enter a valid email address.").isEmail();
+    const errors = req.validationErrors();
+
+    if (errors) {
+        res.send(errors);
+    } else {
+        User.findOne({email: req.body.email}, (error1, user) => {
+            if (error1) {
+                logger.error(error1);
+                res.status(400).json({
+                    success: false,
+                    error: "user name and password is not valid"
+                });
+                return;
+            }
+            if (user) {
+                user.comparePassword(req.body.password, (error2, isMatch) => {
+                    if (error2) {
+                        logger.error(error2);
+                        res.status(400).json({
+                            success: false,
+                            error: "user name and password is not valid"
+                        });
+                        return;
+                    }
+                    if (isMatch) {
+                        const payload = {
+                            sub: user._id,
+                            email: user.email
+                        };
+                        const token = jwt.sign(payload, jwtConfig.secretKey, {expiresIn: 1000});
+
+                        res.json({
+                            success: true,
+                            payload: {
+                                token: `${jwtConfig.headerScheme.toUpperCase()} ${token}`,
                                 role: user.role
-                            }
-                        },
-                    });
-                } else {
-                    res.json({
-                        success: false,
-                        message: "Authentication failed. Password is not matched."
-                    });
-                }
-            });
-        } else {
-            res.json({
-                success: false,
-                message: "Authentication failed. User is not found."
-            });
-        }
-    });
+                            },
+                        });
+                    } else {
+                        res.status(400).json({
+                            success: false,
+                            error: "Authentication failed. Password is not matched."
+                        });
+                    }
+                });
+            } else {
+                res.status(400).json({
+                    success: false,
+                    message: "Authentication failed. User is not found."
+                });
+            }
+        });
+    }
+
+
 });
 
-router.get("/dashboard", passport.authenticate("jwt", {session: false}), (req, res) => {
-    res.send(`it worked. User id is ${req.user._id}.`);
+router.get("/dashboard", passport.authenticate(jwtConfig.headerScheme, {session: jwtConfig.session}), (req, res) => {
+    res.send(`it worked. User is ${JSON.stringify(req.user)}`);
 });
 
 module.exports = router;

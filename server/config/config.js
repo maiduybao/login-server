@@ -12,7 +12,7 @@ const config = {
                 maxLogSize: 10485760,
                 layout: {
                     type: "pattern",
-                    pattern: "%d{ABSOLUTE} %p %c %m%n"
+                    pattern: "%d{ISO8601} %p %c %m%n"
                 },
             },
         },
@@ -28,7 +28,9 @@ const config = {
     },
     jwt: {
         secretKey: "hqF65AiumUo=",
-        headerScheme: "jwt"
+        // headerScheme is only jwt, Bearer
+        headerScheme: "jwt",
+        session: false
     }
 };
 

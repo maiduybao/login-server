@@ -1,4 +1,6 @@
 import express from "express";
+import expressValidator from "express-validator";
+
 import path from "path";
 
 // const favicon = require("serve-favicon");
@@ -10,7 +12,7 @@ import rsvp from "rsvp";
 import passport from "passport";
 // app configs
 import {database as dbConfig, log as logConfig} from "./config/config";
-import passportStrategy from "./config/passport";
+import passportStrategy from "./passport";
 
 import index from "./routes/index";
 //  import users from "./routes/users";
@@ -37,20 +39,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(expressValidator());
 
 // initialize passport
 app.use(passport.initialize());
-
-// database connection
-mongoose.connect(dbConfig.uri, dbConfig.options).
-    catch((error) => {
-        const logger = log4js.getLogger("Mongo");
-
-        logger.error(error.message);
-    });
-
 // bring in passport strategy
 passportStrategy(passport);
+
+// database connection
+const promise = mongoose.connect(dbConfig.uri, dbConfig.options);
+
+promise.catch((error) => {
+    const logger = log4js.getLogger("Mongo");
+
+    logger.error(error.message);
+});
 
 // allow for cross-origin API requests
 app.use((req, res, next) => {

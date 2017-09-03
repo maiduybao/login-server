@@ -1,6 +1,9 @@
 import {ExtractJwt, Strategy} from "passport-jwt";
-import {User} from "../models/user";
-import {jwt as jwtConfig} from "./config";
+import User from "./models/user";
+import {jwt as jwtConfig} from "./config/config";
+import log4js from "log4js";
+
+const logger = log4js.getLogger("passport");
 
 export default (passport) => {
     const opts = {
@@ -9,10 +12,15 @@ export default (passport) => {
     };
 
     passport.use(new Strategy(opts, (payload, done) => {
-        User.findOne({id: payload.sub}, (error, user) => {
-            if (error) {
+        logger.debug("jwt payload", JSON.stringify(payload));
+        User.findById(payload.sub, (error, user) => {
+            logger.debug("error", JSON.stringify(error));
+
+            if (error !== null) {
+                logger.error(error);
                 return done(error, false);
             }
+            logger.debug("user", JSON.stringify(user));
             if (user) {
                 return done(null, user);
             }

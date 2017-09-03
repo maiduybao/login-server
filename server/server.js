@@ -72,7 +72,7 @@ httpServer.on("listening", () => {
         ? `pipe ${addr}`
         : `port ${addr.port}`;
 
-    logger.debug(`Listening on ${bind}`);
+    logger.debug(`HTTP Listening on ${bind}`);
 });
 
 /**
@@ -96,6 +96,41 @@ rsvp.all(promises).
         const httpsServer = https.createServer(credentials, app);
 
         httpsServer.listen(8443);
+
+        httpsServer.on("error", (error) => {
+            if (error.syscall !== "listen") {
+                throw error;
+            }
+
+            const bind = typeof port === "string"
+                ? `Pipe ${port}`
+                : `Port ${port}`;
+
+            switch (error.code) {
+            case "EACCES":
+                logger.error(`${bind} requires elevated privileges`);
+                process.exit(1);
+                break;
+            case "EADDRINUSE":
+                logger.error(`${bind} is already in use`);
+                process.exit(1);
+                break;
+            default:
+                throw error;
+            }
+        });
+
+
+        httpsServer.on("listening", () => {
+            const addr = httpsServer.address();
+            const bind = typeof addr === "string"
+                ? `pipe ${addr}`
+                : `port ${addr.port}`;
+
+            logger.debug(`HTTPS Listening on ${bind}`);
+        });
+
+
     }).
     catch((error) => {
         logger.error(error);
