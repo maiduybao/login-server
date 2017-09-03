@@ -47,8 +47,8 @@ UserSchema.pre("save", function (next) {
 });
 
 // create a method for compare password
-UserSchema.methods.comparePassword = function (password, callback) {
-    bcrypt.compare(password, this.password, (error, isMath) => {
+UserSchema.methods.comparePassword = function (hashedPassword, callback) {
+    bcrypt.compare(hashedPassword, this.password, (error, isMath) => {
         if (error) {
             return callback(error);
         }
