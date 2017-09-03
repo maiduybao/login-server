@@ -6,7 +6,7 @@ import User from "../models/user";
 const logger = log4js.getLogger("UserController");
 
 class UserController {
-    static register(req, res) {
+    static register (req, res) {
         logger.debug("This is in the user register");
         if (!req.body.email || !req.body.password) {
             res.json({
@@ -35,7 +35,7 @@ class UserController {
         }
     }
 
-    static authenticate(req, res) {
+    static authenticate (req, res) {
         logger.debug("This is in the user authentication");
         User.findOne({email: req.body.email}, (error1, user) => {
             if (error1) {
@@ -84,8 +84,11 @@ class UserController {
         });
     }
 
-    static profile(req, res) {
-        res.json(req.user);
+    static profile (req, res) {
+        res.json({
+            email: req.user.email,
+            roles: req.user.roles
+        });
     }
 }
 
