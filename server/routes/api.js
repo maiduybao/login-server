@@ -13,4 +13,3 @@ router.post("/user/authenticate", UserController.authenticate);
 router.get("/user/profile", passport.authenticate(jwtConfig.headerScheme, {session: jwtConfig.session}), UserController.profile);
 
 module.exports = router;
-``
