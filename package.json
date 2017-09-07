@@ -18,7 +18,7 @@
     "hbs": "^4.0.1",
     "jsonwebtoken": "^7.4.3",
     "log4js": "^2.3.3",
-    "mongoose": "^4.11.8",
+    "mongoose": "^4.11.10",
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
     "rsvp": "^4.6.1",
@@ -32,9 +32,9 @@
     "babel-preset-stage-2": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
-    "eslint": "^4.6.0",
+    "eslint": "^4.6.1",
     "file-loader": "^0.11.2",
-    "webpack": "^3.5.5",
+    "webpack": "^3.5.6",
     "webpack-node-externals": "^1.6.0"
   }
 }

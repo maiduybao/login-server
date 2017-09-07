@@ -52,7 +52,7 @@ class UserController {
                         logger.error(error2);
                         res.status(400).json({
                             success: false,
-                            error: "user name and password is not valid"
+                            error: "user name amongodnd password is not valid"
                         });
                         return;
                     }
