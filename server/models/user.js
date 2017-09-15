@@ -8,11 +8,11 @@ const UserSchema = new Schema({
         type: String,
         lowercase: true,
         unique: true,
-        required: true,
+        required: true
     },
     password: {
         type: String,
-        required: true,
+        required: true
     },
     roles: [
         {
@@ -22,9 +22,17 @@ const UserSchema = new Schema({
                 "Manager",
                 "Admin"
             ],
-            default: "Client",
+            default: "Client"
         }
     ],
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    }
 });
 
 // Save user hash password

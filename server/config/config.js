@@ -30,7 +30,9 @@ const config = {
         secretKey: "hqF65AiumUo=",
         // headerScheme is only jwt, Bearer
         headerScheme: "jwt",
-        session: false
+        session: false,
+        // tokenExpires in seconds. Eg: 1000, "2 days", "10h", "7d"
+        tokenExpires: "1 days"
     }
 };
 

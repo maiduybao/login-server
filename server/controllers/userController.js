@@ -6,7 +6,7 @@ import User from "../models/user";
 const logger = log4js.getLogger("UserController");
 
 class UserController {
-    static register (req, res) {
+    static register(req, res) {
         logger.debug("This is in the user register");
         if (!req.body.email || !req.body.password) {
             res.json({
@@ -14,13 +14,12 @@ class UserController {
                 message: "Please enter an email and password to register."
             });
         } else {
-            const user = new User({
-                email: req.body.email,
-                password: req.body.password,
-            });
+            logger.debug("register:", req.body);
+            const user = new User(req.body);
 
             user.save((error) => {
                 if (error) {
+                    logger.error("register error", error);
                     res.json({
                         success: false,
                         message: "That email is already exist."
@@ -35,14 +34,14 @@ class UserController {
         }
     }
 
-    static authenticate (req, res) {
+    static authenticate(req, res) {
         logger.debug("This is in the user authentication");
         User.findOne({email: req.body.email}, (error1, user) => {
             if (error1) {
                 logger.error(error1);
-                res.status(400).json({
+                res.json({
                     success: false,
-                    error: "user name and password is not valid"
+                    error: "Authentication failed. User name and password is not valid"
                 });
                 return;
             }
@@ -50,41 +49,43 @@ class UserController {
                 user.comparePassword(req.body.password, (error2, isMatch) => {
                     if (error2) {
                         logger.error(error2);
-                        res.status(400).json({
+                        res.json({
                             success: false,
-                            error: "user name amongodnd password is not valid"
+                            error: "Authentication failed. User name and password is not valid"
                         });
                         return;
                     }
                     if (isMatch) {
+                        const {_id: id, email, roles, firstName, lastName} = user;
                         const payload = {
-                            sub: user._id,
-                            email: user.email,
-                            roles: user.roles
+                            id,
+                            email,
+                            roles,
+                            firstName,
+                            lastName
                         };
-                        const token = jwt.sign(payload, jwtConfig.secretKey, {expiresIn: 1000});
-
+                        const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
                         res.json({
                             success: true,
                             payload: {token: `${jwtConfig.headerScheme.toUpperCase()} ${token}`}
                         });
                     } else {
-                        res.status(400).json({
+                        res.json({
                             success: false,
-                            error: "Authentication failed. Password is not matched."
+                            error: "Authentication failed. User name and password is not valid"
                         });
                     }
                 });
             } else {
-                res.status(400).json({
+                res.json({
                     success: false,
-                    message: "Authentication failed. User is not found."
+                    error: "Authentication failed. User name and password is not valid"
                 });
             }
         });
     }
 
-    static profile (req, res) {
+    static profile(req, res) {
         res.json({
             email: req.user.email,
             roles: req.user.roles

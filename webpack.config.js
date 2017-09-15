@@ -17,7 +17,8 @@ module.exports = {
     target: "node",
     output: {
         path: PROJECT_PATHS.build,
-        filename: "server.js"
+        filename: "server.js",
+        publicPath: "/"
     },
     module: {
         rules: [

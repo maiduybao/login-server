@@ -74,8 +74,8 @@
         "id-blacklist": "error",
         "id-length": "error",
         "id-match": "error",
-        "indent": "error",
-        "indent-legacy": "error",
+        "indent": "off",
+        "indent-legacy": "off",
         "init-declarations": "error",
         "jsx-quotes": "error",
         "key-spacing": "error",
@@ -103,10 +103,7 @@
         "multiline-ternary": "error",
         "new-cap": "off",
         "new-parens": "error",
-        "newline-after-var": [
-            "error",
-            "always"
-        ],
+        "newline-after-var": "off",
         "newline-before-return": "off",
         "newline-per-chained-call": "error",
         "no-alert": "error",
