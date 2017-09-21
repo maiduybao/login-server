@@ -38,7 +38,7 @@ class AuthController {
                     const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
                     res.json({accessToken: `${jwtConfig.headerScheme.toUpperCase()} ${token}`});
                 } else {
-                    throw new Error("Invalid user name and password");
+                    res.status(401).json({error: {message: "Invalid user name and password"}});
                 }
             });
         })
