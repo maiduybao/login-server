@@ -43,6 +43,15 @@ class UserService {
         });
     }
 
+    getUsers () {
+        return UserModel.find().exec()
+        .then((users) => users)
+        .catch((error) => {
+            logger.error("getUsers", error);
+            throw error;
+        });
+    }
+
 }
 
 export default new UserService();
