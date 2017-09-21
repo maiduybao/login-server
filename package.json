@@ -9,12 +9,13 @@
     "build": "webpack"
   },
   "dependencies": {
+    "ajv": "^5.2.2",
     "bcrypt": "^1.0.3",
     "body-parser": "~1.17.1",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "debug": "~2.6.3",
     "express": "~4.15.2",
-    "express-validator": "^4.1.1",
     "hbs": "^4.0.1",
     "jsonwebtoken": "^7.4.3",
     "log4js": "^2.3.3",
@@ -22,7 +23,8 @@
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
     "rsvp": "^4.6.1",
-    "serve-favicon": "^2.4.4"
+    "serve-favicon": "^2.4.4",
+    "swagger-tools": "^0.10.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -32,7 +34,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
-    "eslint": "^4.6.1",
+    "eslint": "^4.7.0",
     "file-loader": "^0.11.2",
     "webpack": "^3.6.0",
     "webpack-node-externals": "^1.6.0"

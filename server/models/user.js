@@ -1,18 +1,20 @@
 import mongoose, {Schema} from "mongoose";
 import bcrypt from "bcrypt";
-import log4js from "log4js";
+// import log4js from "log4js";
 
-const logger = log4js.getLogger("models.user");
+// const logger = log4js.getLogger("models.user");
 const UserSchema = new Schema({
     email: {
         type: String,
         lowercase: true,
         unique: true,
-        required: true
+        required: true,
+        trim: true
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     roles: [
         {
@@ -22,23 +24,27 @@ const UserSchema = new Schema({
                 "Manager",
                 "Admin"
             ],
-            default: "Client"
+            default: "Client",
+            trim: true
         }
     ],
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     lastName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     }
-});
+}, {timestamps: true});
 
-// Save user hash password
+// Save user hash password when password is new or modified
 UserSchema.pre("save", function (next) {
+    const SALT_FACTOR = 12;
     if (this.isModified("password") || this.isNew) {
-        bcrypt.genSalt(10, (error1, salt) => {
+        bcrypt.genSalt(SALT_FACTOR, (error1, salt) => {
             if (error1) {
                 return next(error1);
             }
@@ -47,7 +53,6 @@ UserSchema.pre("save", function (next) {
                     return next(error2);
                 }
                 this.password = hash;
-                logger.debug(`hash=${hash}`);
                 next();
             });
         });

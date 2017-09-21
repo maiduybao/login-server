@@ -1,0 +1,23 @@
+{
+  "title": "POST /api/authenticate",
+  "description": "Authenticate a login user",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "user email"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6,
+      "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$",
+      "description": "password consisting of 6 or more characters with uppercase, lowercase, and number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "email",
+    "password"
+  ]
+}

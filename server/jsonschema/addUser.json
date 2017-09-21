@@ -1,0 +1,45 @@
+{
+  "title": "POST /api/v1/users",
+  "description": "restricted add a new user",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "user email"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6,
+      "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$",
+      "description": "password consisting of 6 or more characters with uppercase, lowercase, and number"
+    },
+    "firstName": {
+      "type": "string",
+      "minLength": 2
+    },
+    "lastName": {
+      "type": "string",
+      "minLength": 2
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Client",
+          "Manager",
+          "Admin"
+        ]
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "email",
+    "password",
+    "firstName",
+    "lastName"
+  ]
+}

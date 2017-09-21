@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import rsvp from "rsvp";
 
+
 const readFile = rsvp.denodeify(fs.readFile);
 
 /**
@@ -43,23 +44,22 @@ httpServer.on("error", (error) => {
     if (error.syscall !== "listen") {
         throw error;
     }
-
     const bind = typeof port === "string"
         ? `Pipe ${port}`
         : `Port ${port}`;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-    case "EACCES":
-        logger.error(`${bind} requires elevated privileges`);
-        process.exit(1);
-        break;
-    case "EADDRINUSE":
-        logger.error(`${bind} is already in use`);
-        process.exit(1);
-        break;
-    default:
-        throw error;
+        case "EACCES":
+            logger.error(`${bind} requires elevated privileges`);
+            process.exit(1);
+            break;
+        case "EADDRINUSE":
+            logger.error(`${bind} is already in use`);
+            process.exit(1);
+            break;
+        default:
+            throw error;
     }
 });
 
@@ -87,26 +87,24 @@ const promises = [
     readFile(path.join(".", "ssl", "cert.pem"), "utf8")
 ];
 
-rsvp.all(promises).
-    then((results) => {
-        const credentials = {
-            key: results[0],
-            cert: results[1]
-        };
-        const httpsServer = https.createServer(credentials, app);
+rsvp.all(promises)
+.then((results) => {
+    const credentials = {
+        key: results[0],
+        cert: results[1]
+    };
+    const httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(8443);
+    httpsServer.on("error", (error) => {
+        if (error.syscall !== "listen") {
+            throw error;
+        }
 
-        httpsServer.listen(8443);
+        const bind = typeof port === "string"
+            ? `Pipe ${port}`
+            : `Port ${port}`;
 
-        httpsServer.on("error", (error) => {
-            if (error.syscall !== "listen") {
-                throw error;
-            }
-
-            const bind = typeof port === "string"
-                ? `Pipe ${port}`
-                : `Port ${port}`;
-
-            switch (error.code) {
+        switch (error.code) {
             case "EACCES":
                 logger.error(`${bind} requires elevated privileges`);
                 process.exit(1);
@@ -117,21 +115,21 @@ rsvp.all(promises).
                 break;
             default:
                 throw error;
-            }
-        });
-
-
-        httpsServer.on("listening", () => {
-            const addr = httpsServer.address();
-            const bind = typeof addr === "string"
-                ? `pipe ${addr}`
-                : `port ${addr.port}`;
-
-            logger.debug(`HTTPS Listening on ${bind}`);
-        });
-
-
-    }).
-    catch((error) => {
-        logger.error(error);
+        }
     });
+
+
+    httpsServer.on("listening", () => {
+        const addr = httpsServer.address();
+        const bind = typeof addr === "string"
+            ? `pipe ${addr}`
+            : `port ${addr.port}`;
+
+        logger.debug(`HTTPS Listening on ${bind}`);
+    });
+
+
+})
+.catch((error) => {
+    logger.error(error);
+});

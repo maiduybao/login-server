@@ -1,101 +1,114 @@
-import express from "express";
+import express, {Router} from "express";
 import path from "path";
-
-// const favicon = require("serve-favicon");
+// import favicon from "serve-favicon";
 import log4js from "log4js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import rsvp from "rsvp";
 import passport from "passport";
+import cors from "cors";
 // app configs
-import {database as dbConfig, log as logConfig} from "./config/config";
-import passportStrategy from "./passport";
+import {dbConfig, logConfig} from "./config";
+import passportService from "./services/passport";
 
-// import index from "./routes/index";
-// import users from "./routes/users";
-import api from "./routes/api";
+// controllers
+import AuthController from "./controllers/authController";
+import UserController from "./controllers/userController";
 
-mongoose.Promise = rsvp.Promise;
-
-/**
- * Initialise log4js first, so we don't miss any log messages
- */
-log4js.configure(logConfig);
 
 const app = express();
 
-// view engine setup
-app.set("views", "./views");
-app.set("view engine", "hbs");
-
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(log4js.connectLogger(log4js.getLogger("http"), {level: "auto"}));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-
-// initialize passport
-app.use(passport.initialize());
-// bring in passport strategy
-passportStrategy(passport);
-
-// database connection
-const promise = mongoose.connect(dbConfig.uri, dbConfig.options);
-
-promise.catch((error) => {
-    const logger = log4js.getLogger("Mongo");
-
-    logger.error(error.message);
-});
-
-// allow for cross-origin API requests
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    // Set to true if you want web client to include the cookie in the requests send
-    res.header("Access-Control-Allow-Credentials", false);
-    res.header("Access-Control-Allow-Headers",
-        "Content-Type, Accept, Authorization, Content-Length, X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
-
-    next();
-});
-
-// routes
-// app.use("/", index);
-//  app.use("/users", users);
-app.use("/api", api);
-app.get("/ping", (req, res) => {
-    res.json({success: true});
-});
-
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-    const err = new Error("Not Found");
-
-    err.status = 404;
-    next(err);
-});
-
-// error handler
-app.use((err, req, res) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    if (req.app.get("env") === "development") {
-        res.locals.error = err;
-    } else {
-        res.locals.error = {};
+class App {
+    constructor() {
+        this.initLogger();
+        this.initViewEngine();
+        this.initExpressMiddleware();
+        this.initDB();
+        this.initRoutes();
     }
 
-    // render the error page
-    const httpInternalError = 500;
+    initLogger() {
+        log4js.configure(logConfig);
+    }
 
-    res.status(err.status || httpInternalError);
-    res.render("error");
-});
+    initDB() {
+        const logger = log4js.getLogger("mongodb");
+        // set promise for mongodb
+        mongoose.Promise = rsvp.Promise;
+        // mongodb connection
+        mongoose.connect(dbConfig.uri, dbConfig.options)
+        .then(() => {
+            logger.debug("connected to mongodb");
+        })
+        .catch((error) => {
+            logger.error(error);
+            process.exit(1);
+        });
+
+    }
+
+    initExpressMiddleware() {
+        app.use(log4js.connectLogger(log4js.getLogger("http"), {level: "auto"}));
+        //     app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({extended: false}));
+        app.use(cookieParser());
+        app.use(express.static(path.join(__dirname, "public")));
+        // allow for cross-origin API requests
+        app.use(cors());
+
+        // initialize passport
+        app.use(passport.initialize());
+        passportService(passport);
+
+        // catch 404 and forward to error handler
+
+        /*
+        app.use((req, res, next) => {
+            const err = new Error("Not Found");
+            err.status = 404;
+            next(err);
+        });
+        */
+
+
+        // error handler
+        /*
+        app.use((err, req, res) => {
+            // set locals, only providing error in development
+            res.locals.message = err.message;
+            if (req.app.get("env") === "development") {
+                res.locals.error = err;
+            } else {
+                res.locals.error = {};
+            }
+            // render the error page
+            const httpInternalError = 500;
+
+            res.status(err.status || httpInternalError);
+            res.render("error");
+        });
+        */
+    }
+
+    initViewEngine() {
+        app.set("views", "./views");
+        app.set("view engine", "hbs");
+    }
+
+    initRoutes() {
+        const apiRouter = Router();
+        app.use("/api", apiRouter);
+
+        const apiV1 = Router();
+        apiRouter.use("/v1", apiV1);
+
+        new AuthController(apiV1);
+        new UserController(apiV1);
+    }
+}
+
+new App();
 
 export default app;

@@ -1,0 +1,41 @@
+{
+  "database": {
+    "uri": "mongodb://127.0.0.1:27017/user_db",
+    "options": {
+      "useMongoClient": true
+    }
+  },
+  "log": {
+    "appenders": {
+      "out": {
+        "type": "stdout"
+      },
+      "app": {
+        "type": "file",
+        "filename": "./log/application.log",
+        "maxLogSize": 1024,
+        "backups": 2,
+        "compress": false,
+        "layout": {
+          "type": "pattern",
+          "pattern": "%d{ISO8601} %p %c %m%n"
+        }
+      }
+    },
+    "categories": {
+      "default": {
+        "appenders": [
+          "out",
+          "app"
+        ],
+        "level": "debug"
+      }
+    }
+  },
+  "jwt": {
+    "secretKey": "hqF65AiumUo=",
+    "headerScheme": "jwt",
+    "session": false,
+    "tokenExpires": "1 days"
+  }
+}

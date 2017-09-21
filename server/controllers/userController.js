@@ -1,94 +1,88 @@
-import jwt from "jsonwebtoken";
 import log4js from "log4js";
-import {jwt as jwtConfig} from "../config/config";
-import User from "../models/user";
+// services
+import userService from "../services/userService";
+
+import authenticated from "../middlewares/authenticated";
+import validate from "../middlewares/validate";
+
+import addUserSchema from "../jsonschema/addUser.json";
+import registerUserSchema from "../jsonschema/registerUser.json";
+
+import updateUserSchema from "../jsonschema/updateUser.json";
 
 const logger = log4js.getLogger("UserController");
 
 class UserController {
-    static register(req, res) {
-        logger.debug("This is in the user register");
-        if (!req.body.email || !req.body.password) {
-            res.json({
-                success: false,
-                message: "Please enter an email and password to register."
-            });
-        } else {
-            logger.debug("register:", req.body);
-            const user = new User(req.body);
 
-            user.save((error) => {
-                if (error) {
-                    logger.error("register error", error);
-                    res.json({
-                        success: false,
-                        message: "That email is already exist."
-                    });
-                } else {
-                    res.json({
-                        success: true,
-                        message: "Successful create new user"
-                    });
-                }
-            });
-        }
+    constructor(router) {
+        this.router = router;
+        this.registerRoutes();
     }
 
-    static authenticate(req, res) {
-        logger.debug("This is in the user authentication");
-        User.findOne({email: req.body.email}, (error1, user) => {
-            if (error1) {
-                logger.error(error1);
-                res.json({
-                    success: false,
-                    error: "Authentication failed. User name and password is not valid"
-                });
-                return;
-            }
-            if (user) {
-                user.comparePassword(req.body.password, (error2, isMatch) => {
-                    if (error2) {
-                        logger.error(error2);
-                        res.json({
-                            success: false,
-                            error: "Authentication failed. User name and password is not valid"
-                        });
-                        return;
-                    }
-                    if (isMatch) {
-                        const {_id: id, email, roles, firstName, lastName} = user;
-                        const payload = {
-                            id,
-                            email,
-                            roles,
-                            firstName,
-                            lastName
-                        };
-                        const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
-                        res.json({
-                            success: true,
-                            payload: {token: `${jwtConfig.headerScheme.toUpperCase()} ${token}`}
-                        });
-                    } else {
-                        res.json({
-                            success: false,
-                            error: "Authentication failed. User name and password is not valid"
-                        });
-                    }
-                });
-            } else {
-                res.json({
-                    success: false,
-                    error: "Authentication failed. User name and password is not valid"
-                });
-            }
+    registerRoutes() {
+        //    this.router.get("/users", this.getPlayers.bind(this));
+        this.router.get("/users/:id", authenticated, this.getUser);
+        this.router.post("/users", authenticated, validate(addUserSchema), this.addUser);
+        this.router.post("/users/register", validate(registerUserSchema), this.addUser);
+        this.router.put("/users/:id", authenticated, validate(updateUserSchema), this.updateUser);
+    }
+
+    getUser(req, res) {
+        userService.getUserById(req.params.id)
+        .then((user) => {
+            const {_id: id, ...others} = user.toJSON();
+            delete others.password;
+            delete others.__v;
+            const payload = {
+                id,
+                ...others
+            };
+            res.send(payload);
+        })
+        .catch((error) => {
+            logger.error("getUser", error);
+            // NOT FOUND
+            res.sendStatus(404);
         });
     }
 
-    static profile(req, res) {
-        res.json({
-            email: req.user.email,
-            roles: req.user.roles
+    updateUser(req, res) {
+        userService.getUserById(req.params.id)
+        .then((user) => {
+            const update = Object.assign(user, req.body);
+            update.save();
+            const {_id: id, ...others} = update.toJSON();
+            delete others.password;
+            delete others.__v;
+            const payload = {
+                id,
+                ...others
+            };
+            res.send(payload);
+        })
+        .catch((error) => {
+            logger.error("updateUser", error);
+            // NOT FOUND
+            res.sendStatus(404);
+        });
+    }
+
+    addUser(req, res) {
+        userService.addUser(req.body)
+        .then((user) => {
+            if (user) {
+                res.status(201).json({id: user._id});
+            } else {
+                // CONFLICT
+                res.status(409).json(
+                    {error: {message: "email is already exist"}}
+                );
+            }
+        })
+        .catch((error) => {
+            logger.error("addUser", error);
+            // BAD REQUEST
+            res.sendStatus(400);
         });
     }
 }
