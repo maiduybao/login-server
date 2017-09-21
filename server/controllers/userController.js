@@ -4,6 +4,8 @@ import userService from "../services/userService";
 // middleware
 import authenticated from "../middlewares/authenticated";
 import validate from "../middlewares/validate";
+import permitted from "../middlewares/permitted";
+
 // Json Schema
 import addUserSchema from "../jsonschema/addUser.json";
 import registerUserSchema from "../jsonschema/registerUser.json";
@@ -19,9 +21,9 @@ class UserController {
     }
 
     registerRoutes () {
-        this.router.get("/users", authenticated, this.getUsers);
+        this.router.get("/users", authenticated, permitted(["Admin"]), this.getUsers);
         this.router.get("/users/:id", authenticated, this.getUser);
-        this.router.post("/users", authenticated, validate(addUserSchema), this.addUser);
+        this.router.post("/users", authenticated, permitted(["Admin"]), validate(addUserSchema), this.addUser);
         this.router.post("/users/register", validate(registerUserSchema), this.addUser);
         this.router.put("/users/:id", authenticated, validate(updateUserSchema), this.updateUser);
     }
