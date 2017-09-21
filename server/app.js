@@ -20,7 +20,7 @@ import UserController from "./controllers/userController";
 const app = express();
 
 class App {
-    constructor() {
+    constructor () {
         this.initLogger();
         this.initViewEngine();
         this.initExpressMiddleware();
@@ -28,11 +28,11 @@ class App {
         this.initRoutes();
     }
 
-    initLogger() {
+    initLogger () {
         log4js.configure(logConfig);
     }
 
-    initDB() {
+    initDB () {
         const logger = log4js.getLogger("mongodb");
         // set promise for mongodb
         mongoose.Promise = rsvp.Promise;
@@ -48,7 +48,7 @@ class App {
 
     }
 
-    initExpressMiddleware() {
+    initExpressMiddleware () {
         app.use(log4js.connectLogger(log4js.getLogger("http"), {level: "auto"}));
         //     app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
         app.use(bodyParser.json());
@@ -92,12 +92,12 @@ class App {
         */
     }
 
-    initViewEngine() {
+    initViewEngine () {
         app.set("views", "./views");
         app.set("view engine", "hbs");
     }
 
-    initRoutes() {
+    initRoutes () {
         const apiRouter = Router();
         app.use("/api", apiRouter);
 

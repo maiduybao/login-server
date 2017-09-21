@@ -14,12 +14,12 @@ const logger = log4js.getLogger("UserController");
 
 class UserController {
 
-    constructor(router) {
+    constructor (router) {
         this.router = router;
         this.registerRoutes();
     }
 
-    registerRoutes() {
+    registerRoutes () {
         //    this.router.get("/users", this.getPlayers.bind(this));
         this.router.get("/users/:id", authenticated, this.getUser);
         this.router.post("/users", authenticated, validate(addUserSchema), this.addUser);
@@ -27,7 +27,7 @@ class UserController {
         this.router.put("/users/:id", authenticated, validate(updateUserSchema), this.updateUser);
     }
 
-    getUser(req, res) {
+    getUser (req, res) {
         userService.getUserById(req.params.id)
         .then((user) => {
             const {_id: id, ...others} = user.toJSON();
@@ -46,7 +46,7 @@ class UserController {
         });
     }
 
-    updateUser(req, res) {
+    updateUser (req, res) {
         userService.getUserById(req.params.id)
         .then((user) => {
             const update = Object.assign(user, req.body);
@@ -67,7 +67,7 @@ class UserController {
         });
     }
 
-    addUser(req, res) {
+    addUser (req, res) {
         userService.addUser(req.body)
         .then((user) => {
             if (user) {

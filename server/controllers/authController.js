@@ -8,16 +8,16 @@ import credentialSchema from "../jsonschema/authentication.json";
 const logger = log4js.getLogger("authController");
 
 class AuthController {
-    constructor(router) {
+    constructor (router) {
         this.router = router;
         this.registerRoutes();
     }
 
-    registerRoutes() {
+    registerRoutes () {
         this.router.post("/authenticate", validate(credentialSchema), this.authenticate);
     }
 
-    authenticate(req, res) {
+    authenticate (req, res) {
         logger.log("call authenticate");
         const promise = userService.getUserByEmail(req.body.email);
         promise
