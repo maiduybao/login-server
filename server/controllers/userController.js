@@ -68,7 +68,6 @@ class UserController {
     }
 
     updateUser(req, res) {
-    //    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
         userService.updateUser(req.params.id, req.body)
         .then((user) => {
             const {_id: id, ...rest} = user;
