@@ -31,7 +31,7 @@ class UserService {
     }
 
     updateUser(id, update) {
-        return UserModel.findByIdAndUpdate(id, update)
+        return UserModel.findByIdAndUpdate(id, update, {new: true})
         .lean()
         .exec()
         .then((updated) => updated)
