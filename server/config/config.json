@@ -11,23 +11,21 @@
         "type": "stdout"
       },
       "app": {
-        "type": "file",
-        "filename": "./log/application.log",
-        "maxLogSize": 1024,
-        "backups": 2,
-        "compress": false,
+        "type": "dateFile",
+        "filename": "./log/app.log",
+        "pattern": ".yyyy-MM-dd",
+        "alwaysIncludePattern": true,
         "layout": {
           "type": "pattern",
           "pattern": "%d{ISO8601} %p %c %m%n"
-        }
+        },
+        "daysToKeep": 7,
+        "compress": true
       }
     },
     "categories": {
       "default": {
-        "appenders": [
-          "out",
-          "app"
-        ],
+        "appenders": ["out", "app"],
         "level": "debug"
       }
     }

@@ -5,28 +5,25 @@ import userService from "../services/userService";
 import validate from "../middlewares/validate";
 import credentialSchema from "../jsonschema/authentication.json";
 
-const logger = log4js.getLogger("authController");
+const logger = log4js.getLogger("AuthController");
 
 class AuthController {
-    constructor (router) {
+    constructor(router) {
         this.router = router;
         this.registerRoutes();
     }
 
-    registerRoutes () {
+    registerRoutes() {
         this.router.post("/authenticate", validate(credentialSchema), this.authenticate);
     }
 
-    authenticate (req, res) {
-        logger.log("call authenticate");
+    authenticate(req, res) {
         const promise = userService.getUserByEmail(req.body.email);
         promise
         .then((user) => {
-            user.comparePassword(req.body.password, (error, isMatch) => {
-                if (error) {
-                    throw new Error("Invalid user name and password");
-                }
-                if (isMatch) {
+            userService.comparePassword(req.body.password, user.password)
+            .then((isMatched) => {
+                if (isMatched) {
                     const {_id: id, email, firstName, lastName, roles} = user;
                     const payload = {
                         id,
@@ -38,13 +35,17 @@ class AuthController {
                     const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
                     res.json({accessToken: `${jwtConfig.headerScheme.toUpperCase()} ${token}`});
                 } else {
-                    res.status(401).json({error: {message: "Invalid user name and password"}});
+                    res.status(401).json({error: {message: "Invalid email/password combination"}});
                 }
+            })
+            .catch((error) => {
+                logger.error(error);
+                res.status(401).json({error: {message: "Invalid email/password combination"}});
             });
         })
         .catch((error) => {
             logger.error("authenticate", error);
-            res.sendStatus(404);
+            res.status(404).json({error: {message: "Email does not exist"}});
         });
     }
 }

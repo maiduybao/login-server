@@ -1,13 +1,17 @@
 import log4js from "log4js";
+import bcrypt from "bcrypt";
+import rsvp from "rsvp";
 
 import UserModel from "../models/user";
 
-const logger = log4js.getLogger("userService");
+const logger = log4js.getLogger("UserService");
 
 class UserService {
 
-    getUserById (guid) {
-        return UserModel.findById(guid).exec()
+    getUserById(id) {
+        return UserModel.findById(id)
+        .lean()
+        .exec()
         .then((user) => user)
         .catch((error) => {
             logger.error("getUserById", error);
@@ -15,8 +19,10 @@ class UserService {
         });
     }
 
-    getUserByEmail (email) {
-        return UserModel.findOne({email}).exec()
+    getUserByEmail(email) {
+        return UserModel.findOne({email})
+        .lean()
+        .exec()
         .then((user) => user)
         .catch((error) => {
             logger.error("getUserByEmail", error);
@@ -24,18 +30,26 @@ class UserService {
         });
     }
 
-    updateUser (user) {
-        return user.save();
+    updateUser(id, update) {
+        return UserModel.findByIdAndUpdate(id, update)
+        .lean()
+        .exec()
+        .then((updated) => updated)
+        .catch((error) => {
+            logger.error("updateUser", error);
+            throw error;
+        });
     }
 
-    addUser (user) {
+    addUser(user) {
         return this.getUserByEmail(user.email)
         .then((found) => {
             if (found) {
                 return false;
             }
             const userModel = new UserModel(user);
-            return userModel.save();
+            userModel.save();
+            return userModel.toJson();
         })
         .catch((error) => {
             logger.error("addUser", error);
@@ -43,13 +57,26 @@ class UserService {
         });
     }
 
-    getUsers () {
-        return UserModel.find().exec()
+    getUsers() {
+        return UserModel.find()
+        .lean()
+        .exec()
         .then((users) => users)
         .catch((error) => {
             logger.error("getUsers", error);
             throw error;
         });
+    }
+
+    comparePassword(password, hash) {
+        const defer = rsvp.defer("comparePassword");
+        bcrypt.compare(password, hash, (error, isMatched) => {
+            if (error) {
+                defer.reject(error);
+            }
+            defer.resolve(isMatched);
+        });
+        return defer.promise;
     }
 
 }

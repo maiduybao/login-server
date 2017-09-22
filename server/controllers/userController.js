@@ -1,4 +1,5 @@
 import log4js from "log4js";
+import {omit} from "lodash";
 // services
 import userService from "../services/userService";
 // middleware
@@ -15,12 +16,12 @@ const logger = log4js.getLogger("UserController");
 
 class UserController {
 
-    constructor (router) {
+    constructor(router) {
         this.router = router;
         this.registerRoutes();
     }
 
-    registerRoutes () {
+    registerRoutes() {
         this.router.get("/users", authenticated, permitted(["Admin"]), this.getUsers);
         this.router.get("/users/:id", authenticated, this.getUser);
         this.router.post("/users", authenticated, permitted(["Admin"]), validate(addUserSchema), this.addUser);
@@ -28,12 +29,11 @@ class UserController {
         this.router.put("/users/:id", authenticated, validate(updateUserSchema), this.updateUser);
     }
 
-    getUser (req, res) {
+    getUser(req, res) {
         userService.getUserById(req.params.id)
         .then((user) => {
-            const {_id: id, ...others} = user.toJSON();
-            delete others.password;
-            delete others.__v;
+            const {_id: id, ...rest} = user;
+            const others = omit(rest, ["password", "__v"]);
             const payload = {
                 id,
                 ...others
@@ -47,13 +47,12 @@ class UserController {
         });
     }
 
-    getUsers (req, res) {
+    getUsers(req, res) {
         userService.getUsers()
         .then((users) => {
             const payload = users.map((user) => {
-                const {_id: id, ...others} = user.toJSON();
-                delete others.password;
-                delete others.__v;
+                const {_id: id, ...rest} = user;
+                const others = omit(rest, ["password", "__v"]);
                 return {
                     id,
                     ...others
@@ -68,14 +67,12 @@ class UserController {
         });
     }
 
-    updateUser (req, res) {
-        userService.getUserById(req.params.id)
+    updateUser(req, res) {
+    //    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
+        userService.updateUser(req.params.id, req.body)
         .then((user) => {
-            const update = Object.assign(user, req.body);
-            update.save();
-            const {_id: id, ...others} = update.toJSON();
-            delete others.password;
-            delete others.__v;
+            const {_id: id, ...rest} = user;
+            const others = omit(rest, ["password", "__v"]);
             const payload = {
                 id,
                 ...others
@@ -89,7 +86,7 @@ class UserController {
         });
     }
 
-    addUser (req, res) {
+    addUser(req, res) {
         userService.addUser(req.body)
         .then((user) => {
             if (user) {

@@ -65,15 +65,5 @@ UserSchema.pre("save", function (next) {
     }
 });
 
-// create a method for compare password
-UserSchema.methods.comparePassword = function (hashedPassword, callback) {
-    bcrypt.compare(hashedPassword, this.password, (error, isMath) => {
-        if (error) {
-            return callback(error);
-        }
-        return callback(null, isMath);
-    });
-};
-
 export default mongoose.model("User", UserSchema);
 

@@ -17,7 +17,7 @@ export default (passport) => {
         userService.getUserById(payload.user.id)
         .then((user) => {
             if (user) {
-                done(null, user.toJSON());
+                done(null, user);
             } else {
                 done(null, false);
             }
