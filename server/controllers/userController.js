@@ -18,10 +18,10 @@ class UserController {
 
     constructor(router) {
         this.router = router;
-        this.registerRoutes();
+        this.urlMapping();
     }
 
-    registerRoutes() {
+    urlMapping() {
         this.router.get("/users", authenticated, permitted(["Admin"]), this.getUsers);
         this.router.get("/users/:id", authenticated, this.getUser);
         this.router.post("/users", authenticated, permitted(["Admin"]), validate(addUserSchema), this.addUser);

@@ -10,10 +10,10 @@ const logger = log4js.getLogger("AuthController");
 class AuthController {
     constructor(router) {
         this.router = router;
-        this.registerRoutes();
+        this.urlMapping();
     }
 
-    registerRoutes() {
+    urlMapping() {
         this.router.post("/authenticate", validate(credentialSchema), this.authenticate);
     }
 
