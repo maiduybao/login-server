@@ -28,8 +28,8 @@ module.exports = {
                 exclude: [path.resolve(__dirname, "/node_modules/")],
                 options: {
                     presets: [
-                        "es2015",
-                        "stage-2"
+                        ["env", {"targets": {"node": "current"}}],
+                        "stage-3"
                     ]
                 }
             },
