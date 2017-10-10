@@ -4,6 +4,12 @@ import bcrypt from "bcrypt";
 
 // const logger = log4js.getLogger("models.user");
 const UserSchema = new Schema({
+    userName: {
+        type: String,
+        unique: true,
+        required: true,
+        trim: true
+    },
     email: {
         type: String,
         lowercase: true,
@@ -62,6 +68,13 @@ UserSchema.pre("save", function (next) {
         }
     } else {
         return next();
+    }
+});
+
+// Not allow to change username
+UserSchema.pre("validate", function () {
+    if (this.isModified("userName")) {
+        this.invalidate("userName");
     }
 });
 
