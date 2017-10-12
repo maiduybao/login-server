@@ -61,7 +61,7 @@ class UserController {
             res.send(payload);
         })
         .catch((error) => {
-            logger.error("getUser", error);
+            logger.error("getUsers", error);
             // NOT FOUND
             res.sendStatus(404);
         });

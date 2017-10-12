@@ -20,33 +20,36 @@ class AuthController {
     authenticate(req, res) {
         const promise = userService.getUserByEmail(req.body.email);
         promise
-        .then((user) => {
-            userService.comparePassword(req.body.password, user.password)
-            .then((isMatched) => {
-                if (isMatched) {
-                    const {_id: id, email, firstName, lastName, roles} = user;
-                    const payload = {
-                        id,
-                        email,
-                        firstName,
-                        lastName,
-                        roles
-                    };
-                    const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
-                    res.json({accessToken: `${jwtConfig.headerScheme} ${token}`});
-                } else {
-                    res.status(401).json({error: {message: "Invalid email/password combination"}});
-                }
+            .then((user) => {
+                userService.comparePassword(req.body.password, user.password)
+                    .then((isMatched) => {
+                        if (isMatched) {
+                            const {_id: id, email, firstName, lastName, roles} = user;
+                            const payload = {
+                                id,
+                                email,
+                                firstName,
+                                lastName,
+                                roles
+                            };
+                            const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
+                            res.json({
+                                accessToken: token,
+                                tokenType: "Bearer"
+                            });
+                        } else {
+                            res.status(401).json({error: {message: "Invalid email/password combination"}});
+                        }
+                    })
+                    .catch((error) => {
+                        logger.error("authenticate", error);
+                        res.status(401).json({error: {message: "Invalid email/password combination"}});
+                    });
             })
             .catch((error) => {
-                logger.error(error);
-                res.status(401).json({error: {message: "Invalid email/password combination"}});
+                logger.error("authenticate", error);
+                res.status(404).json({error: {message: "Email does not exist"}});
             });
-        })
-        .catch((error) => {
-            logger.error("authenticate", error);
-            res.status(404).json({error: {message: "Email does not exist"}});
-        });
     }
 }
 

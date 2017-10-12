@@ -8,7 +8,7 @@ import userService from "./userService";
 
 export default (passport) => {
     const opts = {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme(jwtConfig.headerScheme),
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: jwtConfig.secretKey
     };
 
