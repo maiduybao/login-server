@@ -31,11 +31,16 @@ export default (passport) => {
 
 
     passport.use(new BasicStrategy((email, password, done) => {
+        logger.info("email", email);
+        logger.info("password", password);
         let foundUser = null;
         userService.getUserByEmail(email)
             .then((user) => {
-                foundUser = user;
-                return userService.comparePassword(password, user.password);
+                if (user) {
+                    foundUser = user;
+                    return userService.comparePassword(password || "", user.password);
+                }
+                return false;
             })
             .then((isMatched) => {
                 if (isMatched) {
