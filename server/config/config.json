@@ -8,7 +8,10 @@
   "log": {
     "appenders": {
       "out": {
-        "type": "stdout"
+        "type": "stdout",
+        "layout": {
+          "type": "basic"
+        }
       },
       "app": {
         "type": "dateFile",
@@ -16,8 +19,7 @@
         "pattern": ".yyyy-MM-dd",
         "alwaysIncludePattern": true,
         "layout": {
-          "type": "pattern",
-          "pattern": "%d{ISO8601} %p %c %m%n"
+          "type": "basic"
         },
         "daysToKeep": 7,
         "compress": true
@@ -25,14 +27,17 @@
     },
     "categories": {
       "default": {
-        "appenders": ["out", "app"],
+        "appenders": [
+          "out",
+          "app"
+        ],
         "level": "debug"
       }
     }
   },
   "jwt": {
     "secretKey": "hqF65AiumUo=",
-    "headerScheme": "jwt",
+    "headerScheme": "JWT",
     "session": false,
     "tokenExpires": "1 days"
   }

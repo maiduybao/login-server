@@ -14,7 +14,7 @@ class AuthController {
     }
 
     urlMapping() {
-        this.router.post("/authenticate", validate(credentialSchema), this.authenticate);
+        this.router.post("/oauth/authenticate", validate(credentialSchema), this.authenticate);
     }
 
     authenticate(req, res) {
@@ -33,7 +33,7 @@ class AuthController {
                         roles
                     };
                     const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
-                    res.json({accessToken: `${jwtConfig.headerScheme.toUpperCase()} ${token}`});
+                    res.json({accessToken: `${jwtConfig.headerScheme} ${token}`});
                 } else {
                     res.status(401).json({error: {message: "Invalid email/password combination"}});
                 }
