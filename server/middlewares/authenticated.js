@@ -1,2 +1,9 @@
 import passport from "passport";
-export default passport.authenticate("jwt", {session: false});
+
+export default (req, res, next) => {
+    let type = "jwt";
+    if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Basic") {
+        type = "basic";
+    }
+    return passport.authenticate(type, {session: false})(req, res, next);
+};
