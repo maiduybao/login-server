@@ -37,8 +37,6 @@
   },
   "jwt": {
     "secretKey": "hqF65AiumUo=",
-    "headerScheme": "JWT",
-    "session": false,
     "tokenExpires": "1 days"
   }
 }
