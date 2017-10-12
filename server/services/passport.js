@@ -15,7 +15,6 @@ export default (passport) => {
     };
 
     passport.use(new Strategy(opts, (payload, done) => {
-        logger.debug("jwt payload", JSON.stringify(payload));
         userService.getUserById(payload.user.id)
             .then((user) => {
                 if (user) {
@@ -32,20 +31,18 @@ export default (passport) => {
 
 
     passport.use(new BasicStrategy((email, password, done) => {
+        let foundUser = null;
         userService.getUserByEmail(email)
             .then((user) => {
-                userService.comparePassword(password, user.password)
-                    .then((isMatched) => {
-                        if (isMatched) {
-                            done(null, user);
-                        } else {
-                            done(null, false);
-                        }
-                    })
-                    .catch((error) => {
-                        logger.error(error);
-                        done(null, false);
-                    });
+                foundUser = user;
+                return userService.comparePassword(password, user.password);
+            })
+            .then((isMatched) => {
+                if (isMatched) {
+                    done(null, foundUser);
+                } else {
+                    done(null, false);
+                }
             })
             .catch((error) => {
                 logger.error(error);
