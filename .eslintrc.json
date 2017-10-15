@@ -100,7 +100,7 @@
         "max-params": "off",
         "max-statements": "error",
         "max-statements-per-line": "error",
-        "multiline-ternary": "error",
+        "multiline-ternary": ["error", "never"],
         "new-cap": "off",
         "new-parens": "error",
         "newline-after-var": "off",

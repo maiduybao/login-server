@@ -26,9 +26,7 @@ class Server {
             if (error.syscall !== "listen") {
                 throw error;
             }
-            const bind = typeof port === "string"
-                ? `Pipe ${port}`
-                : `Port ${port}`;
+            const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
 
             // handle specific listen errors with friendly messages
             switch (error.code) {
@@ -47,10 +45,7 @@ class Server {
 
         httpServer.on("listening", () => {
             const addr = httpServer.address();
-            const bind = typeof addr === "string"
-                ? `pipe ${addr}`
-                : `port ${addr.port}`;
-
+            const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
             logger.debug(`HTTP Listening on ${bind}`);
         });
     }
@@ -76,9 +71,7 @@ class Server {
                     throw error;
                 }
 
-                const bind = typeof port === "string"
-                    ? `Pipe ${port}`
-                    : `Port ${port}`;
+                const bind = typeof port === "string" ? `Pipe ${port}` : `Port ${port}`;
 
                 switch (error.code) {
                     case "EACCES":
@@ -97,10 +90,7 @@ class Server {
 
             httpsServer.on("listening", () => {
                 const addr = httpsServer.address();
-                const bind = typeof addr === "string"
-                    ? `pipe ${addr}`
-                    : `port ${addr.port}`;
-
+                const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
                 logger.debug(`HTTPS Listening on ${bind}`);
             });
 

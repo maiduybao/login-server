@@ -6,7 +6,6 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-
 const PROJECT_PATHS = {
     src: path.resolve(__dirname, "server"),
     build: path.resolve(__dirname, "dist")
@@ -22,6 +21,12 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.js$/,
+                enforce: "pre",
+                exclude: [path.resolve(__dirname, "/node_modules/")],
+                loader: "eslint-loader"
+            },
             {
                 test: /\.js$/,
                 loader: "babel-loader",
