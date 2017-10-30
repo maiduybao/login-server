@@ -49,7 +49,7 @@ class UserService {
             }
             const userModel = new UserModel(user);
             userModel.save();
-            return userModel.toJson();
+            return userModel;
         })
         .catch((error) => {
             logger.error("addUser", error);

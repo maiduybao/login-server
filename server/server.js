@@ -18,7 +18,7 @@ class Server {
     }
 
     createHttpServer () {
-        const port = process.env.PORT || 3000;
+        const port = process.env.HTTP_PORT || 3000;
         app.set("port", port);
         const httpServer = http.createServer(app);
         httpServer.listen(port);
@@ -51,7 +51,7 @@ class Server {
     }
 
     createHttpsServer () {
-        const port = 8443;
+        const port = process.env.HTTPS_PORT || 8443;
         const readFile = rsvp.denodeify(fs.readFile);
         const promises = [
             readFile(path.join(".", "ssl", "key.pem"), "utf8"),

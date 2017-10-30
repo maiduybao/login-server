@@ -42,7 +42,7 @@ class App {
             logger.debug("connected to mongodb");
         })
         .catch((error) => {
-            logger.error(error);
+            logger.fatal(error);
             process.exit(1);
         });
 
@@ -54,7 +54,7 @@ class App {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(cookieParser());
-        app.use(express.static(path.join(__dirname, "public")));
+        app.use(express.static(path.join("./public")));
         // allow for cross-origin API requests
         app.use(cors());
 
