@@ -1,7 +1,6 @@
 import find from "lodash/find";
 import forEach from "lodash/forEach";
 import union from "lodash/union";
-import clone from "lodash/clone";
 import filter from "lodash/filter";
 import map from "lodash/map";
 import intersection from "lodash/intersection";
@@ -19,42 +18,29 @@ const parseResourcePermissions = (permission) => {
     };
 };
 
-const intersectRoleAndResource = (userRoles, resource) => {
-    const aclRoles = [];
+const filterPermissionByResource = (userRoles, resource) => {
+    let permissions = [];
     forEach(userRoles, (role) => {
         const filterAllows = filter(role.allows, (allow) => allow.resource === resource);
         if (filterAllows.length > 0) {
-            const cloneAclRole = clone(role);
-            cloneAclRole.allows = filterAllows;
-            aclRoles.push(cloneAclRole);
+            const permissionGroupList = map(filterAllows, (filterAllow) => filterAllow.permissions);
+            forEach(permissionGroupList, (permissionGroup) => {
+                permissions = union(permissions, permissionGroup);
+            });
         }
     });
-    return aclRoles;
-};
-
-const unionAllows = (intersectAclRoles) => {
-    let unionResults = [];
-    forEach(intersectAclRoles, (intersectAclRole) => {
-        const listAllows = map(intersectAclRole.allows,
-            (allow) => allow.permissions);
-        forEach(listAllows, (allows) => {
-            unionResults = union(unionResults, allows);
-        });
-    });
-    return unionResults;
+    return permissions;
 };
 
 export default (permission) => (req, res, next) => {
     const {roles} = req.user;
     logger.info("user roles", JSON.stringify(roles));
     const resourcePermission = parseResourcePermissions(permission);
-    const intersectAclRoles = intersectRoleAndResource(roles, resourcePermission.resource);
-    logger.info("intersectRoleAndResource", JSON.stringify(intersectAclRoles));
-    if (intersectAclRoles.length > 0) {
-        const aclAllows = unionAllows(intersectAclRoles, resourcePermission.resource);
-        logger.info("aclAllows", aclAllows);
-        if (find(aclAllows, (allow) => allow === "*") ||
-            intersection(resourcePermission.permissions, aclAllows).length !== 0) {
+    const userRolePermissions = filterPermissionByResource(roles, resourcePermission.resource);
+    if (userRolePermissions.length > 0) {
+        logger.info("userRolePermissions", userRolePermissions);
+        if (find(userRolePermissions, (allow) => allow === "*") ||
+            intersection(resourcePermission.permissions, userRolePermissions).length !== 0) {
             return next();
         }
     }
