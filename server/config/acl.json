@@ -2,31 +2,26 @@
   "acl": [
     {
       "role": "Admin",
-      "permissions": [
+      "allows": [
         {
-          "users": "*",
-          "action": "allow"
+          "users": "*"
         }
       ]
     },
     {
       "role": "Client",
-      "permissions": [
+      "allows": [
         {
-          "users": "read",
-          "action": "allow"
+          "users": "read, list"
         },
         {
-          "users": "doSomeThing",
-          "action": "allow"
+          "users": "doSomeThing"
         },
         {
-          "resource1": "read",
-          "action": "allow"
+          "resource1": "read"
         },
         {
-          "resource2": "read",
-          "action": "allow"
+          "resource2": "read"
         }
       ]
     }

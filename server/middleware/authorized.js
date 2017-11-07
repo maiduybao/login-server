@@ -13,7 +13,7 @@ import log4js from "log4js";
 
 const logger = log4js.getLogger("middleware.authorized");
 
-const parseResourcePermission = (permission) => {
+const parseResourcePermissions = (permission) => {
     const data = permission.split(":");
     return {
         resource: data[0],
@@ -26,10 +26,10 @@ const intersectUserAndResourceForAclRoles = (userRoles, resource) => {
     forEach(userRoles, (role) => {
         const aclRole = find(aclConfig, {role});
         if (aclRole) {
-            const permissions = filter(aclRole.permissions, (aclPermission) => Boolean(aclPermission[resource]));
-            if (permissions && permissions.length > 0) {
+            const allows = filter(aclRole.allows, (allow) => Boolean(allow[resource]));
+            if (allows && allows.length > 0) {
                 const cloneAclRole = clone(aclRole);
-                cloneAclRole.permissions = permissions;
+                cloneAclRole.allows = allows;
                 aclRoles.push(cloneAclRole);
             }
         }
@@ -37,13 +37,13 @@ const intersectUserAndResourceForAclRoles = (userRoles, resource) => {
     return aclRoles;
 };
 
-const unionPermissions = (intersectAclRoles, resource) => {
+const unionAllows = (intersectAclRoles, resource) => {
     let unionResults = [];
     forEach(intersectAclRoles, (intersectAclRole) => {
-        const permitList = map(intersectAclRole.permissions,
-            (permit) => permit[resource].split(",").map((item) => item.trim()));
-        forEach(permitList, (item) => {
-            unionResults = union(unionResults, item);
+        const listAllows = map(intersectAclRole.allows,
+            (roleAllows) => roleAllows[resource].split(",").map((item) => item.trim()));
+        forEach(listAllows, (allows) => {
+            unionResults = union(unionResults, allows);
         });
     });
     return unionResults;
@@ -51,13 +51,13 @@ const unionPermissions = (intersectAclRoles, resource) => {
 
 export default (permission) => (req, res, next) => {
     const {roles} = req.user;
-    const resourcePermission = parseResourcePermission(permission);
+    const resourcePermission = parseResourcePermissions(permission);
     const intersectAclRoles = intersectUserAndResourceForAclRoles(roles, resourcePermission.resource);
     if (intersectAclRoles.length > 0) {
-        const aclPermissions = unionPermissions(intersectAclRoles, resourcePermission.resource);
-        logger.info("aclPermissions", aclPermissions);
-        if (find(aclPermissions, (permit) => permit === "*") ||
-            intersection(resourcePermission.permissions, aclPermissions).length !== 0) {
+        const aclAllows = unionAllows(intersectAclRoles, resourcePermission.resource);
+        logger.info("aclAllows", aclAllows);
+        if (find(aclAllows, (allow) => allow === "*") ||
+            intersection(resourcePermission.permissions, aclAllows).length !== 0) {
             return next();
         }
     }
