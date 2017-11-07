@@ -1,7 +1,7 @@
 import {ExtractJwt, Strategy} from "passport-jwt";
 import {BasicStrategy} from "passport-http";
 
-import {jwtConfig} from "../config/index";
+import {jwtConfig} from "../config";
 import log4js from "log4js";
 
 const logger = log4js.getLogger("passport");

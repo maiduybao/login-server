@@ -1,0 +1,34 @@
+{
+  "acl": [
+    {
+      "role": "Admin",
+      "permissions": [
+        {
+          "users": "*",
+          "action": "allow"
+        }
+      ]
+    },
+    {
+      "role": "Client",
+      "permissions": [
+        {
+          "users": "read",
+          "action": "allow"
+        },
+        {
+          "users": "doSomeThing",
+          "action": "allow"
+        },
+        {
+          "resource1": "read",
+          "action": "allow"
+        },
+        {
+          "resource2": "read",
+          "action": "allow"
+        }
+      ]
+    }
+  ]
+}

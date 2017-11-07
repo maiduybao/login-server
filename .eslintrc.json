@@ -98,7 +98,7 @@
         "max-lines": "error",
         "max-nested-callbacks": "error",
         "max-params": "off",
-        "max-statements": "error",
+        "max-statements": ["error", 40, { "ignoreTopLevelFunctions": true }],
         "max-statements-per-line": "error",
         "multiline-ternary": ["error", "never"],
         "new-cap": "off",
