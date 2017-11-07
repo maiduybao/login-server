@@ -41,7 +41,7 @@ const unionAllows = (intersectAclRoles, resource) => {
     let unionResults = [];
     forEach(intersectAclRoles, (intersectAclRole) => {
         const listAllows = map(intersectAclRole.allows,
-            (roleAllows) => roleAllows[resource].split(",").map((item) => item.trim()));
+            (roleAllows) => roleAllows[resource]);
         forEach(listAllows, (allows) => {
             unionResults = union(unionResults, allows);
         });
@@ -53,6 +53,7 @@ export default (permission) => (req, res, next) => {
     const {roles} = req.user;
     const resourcePermission = parseResourcePermissions(permission);
     const intersectAclRoles = intersectUserAndResourceForAclRoles(roles, resourcePermission.resource);
+    logger.info("intersectAclRoles", JSON.stringify(intersectAclRoles));
     if (intersectAclRoles.length > 0) {
         const aclAllows = unionAllows(intersectAclRoles, resourcePermission.resource);
         logger.info("aclAllows", aclAllows);

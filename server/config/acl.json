@@ -4,7 +4,19 @@
       "role": "Admin",
       "allows": [
         {
-          "users": "*"
+          "users": [
+            "*"
+          ]
+        },
+        {
+          "resource1": [
+            "*"
+          ]
+        },
+        {
+          "resource2": [
+            "*"
+          ]
         }
       ]
     },
@@ -12,16 +24,20 @@
       "role": "Client",
       "allows": [
         {
-          "users": "read, list"
+          "users": [
+            "read",
+            "list"
+          ]
         },
         {
-          "users": "doSomeThing"
+          "resource1": [
+            "read"
+          ]
         },
         {
-          "resource1": "read"
-        },
-        {
-          "resource2": "read"
+          "resource2": [
+            "read"
+          ]
         }
       ]
     }
