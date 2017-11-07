@@ -5,9 +5,7 @@ import clone from "lodash/clone";
 import filter from "lodash/filter";
 import map from "lodash/map";
 import intersection from "lodash/intersection";
-
-
-import {aclConfig} from "../config";
+// import RSVP from "RSVP";
 
 import log4js from "log4js";
 
@@ -21,27 +19,24 @@ const parseResourcePermissions = (permission) => {
     };
 };
 
-const intersectUserAndResourceForAclRoles = (userRoles, resource) => {
+const intersectRoleAndResource = (userRoles, resource) => {
     const aclRoles = [];
     forEach(userRoles, (role) => {
-        const aclRole = find(aclConfig, {role});
-        if (aclRole) {
-            const allows = filter(aclRole.allows, (allow) => Boolean(allow[resource]));
-            if (allows && allows.length > 0) {
-                const cloneAclRole = clone(aclRole);
-                cloneAclRole.allows = allows;
-                aclRoles.push(cloneAclRole);
-            }
+        const filterAllows = filter(role.allows, (allow) => allow.resource === resource);
+        if (filterAllows.length > 0) {
+            const cloneAclRole = clone(role);
+            cloneAclRole.allows = filterAllows;
+            aclRoles.push(cloneAclRole);
         }
     });
     return aclRoles;
 };
 
-const unionAllows = (intersectAclRoles, resource) => {
+const unionAllows = (intersectAclRoles) => {
     let unionResults = [];
     forEach(intersectAclRoles, (intersectAclRole) => {
         const listAllows = map(intersectAclRole.allows,
-            (roleAllows) => roleAllows[resource]);
+            (allow) => allow.permissions);
         forEach(listAllows, (allows) => {
             unionResults = union(unionResults, allows);
         });
@@ -51,9 +46,10 @@ const unionAllows = (intersectAclRoles, resource) => {
 
 export default (permission) => (req, res, next) => {
     const {roles} = req.user;
+    logger.info("user roles", JSON.stringify(roles));
     const resourcePermission = parseResourcePermissions(permission);
-    const intersectAclRoles = intersectUserAndResourceForAclRoles(roles, resourcePermission.resource);
-    logger.info("intersectAclRoles", JSON.stringify(intersectAclRoles));
+    const intersectAclRoles = intersectRoleAndResource(roles, resourcePermission.resource);
+    logger.info("intersectRoleAndResource", JSON.stringify(intersectAclRoles));
     if (intersectAclRoles.length > 0) {
         const aclAllows = unionAllows(intersectAclRoles, resourcePermission.resource);
         logger.info("aclAllows", aclAllows);

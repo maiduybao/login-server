@@ -5,7 +5,7 @@ import {jwtConfig} from "../config";
 import log4js from "log4js";
 
 const logger = log4js.getLogger("passport");
-import userService from "./userService";
+import UserService from "./userService";
 
 
 export default (passport) => {
@@ -15,9 +15,10 @@ export default (passport) => {
     };
 
     passport.use(new Strategy(opts, (payload, done) => {
-        userService.getUserById(payload.user.id)
+        UserService.getUserById(payload.user.id)
             .then((user) => {
                 if (user) {
+                //    user.roles = user.roles.map((role) => role.name);
                     done(null, user);
                 } else {
                     done(null, false);
@@ -34,16 +35,17 @@ export default (passport) => {
         logger.info("email", email);
         logger.info("password", password);
         let foundUser = null;
-        userService.getUserByEmail(email)
+        UserService.getUserByEmail(email)
             .then((user) => {
                 if (user) {
                     foundUser = user;
-                    return userService.comparePassword(password || "", user.password);
+                    return UserService.comparePassword(password || "", user.password);
                 }
                 return false;
             })
             .then((isMatched) => {
                 if (isMatched) {
+            //        foundUser.roles = foundUser.roles.map((role) => role.name);
                     done(null, foundUser);
                 } else {
                     done(null, false);

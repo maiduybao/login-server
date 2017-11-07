@@ -1,12 +1,15 @@
 import mongoose, {Schema} from "mongoose";
-import bcrypt from "bcrypt";
-import rsvp from "rsvp";
-// import log4js from "log4js";
+import BCRYPT from "bcrypt";
+import RSVP from "rsvp";
+import RoleAclModel from "./role";
+import log4js from "log4js";
 
-// const logger = log4js.getLogger("models.user");
+const logger = log4js.getLogger("models.user");
+mongoose.Promise = RSVP.Promise;
+
 const UserSchema = new Schema({
     email: {
-        type: String,
+        type: Schema.Types.String,
         lowercase: true,
         unique: true,
         required: true,
@@ -19,30 +22,25 @@ const UserSchema = new Schema({
     },
     roles: [
         {
-            type: String,
-            enum: [
-                "Client",
-                "Manager",
-                "Admin"
-            ],
-            default: "Client",
-            trim: true
+            type: Schema.Types.ObjectId,
+            ref: "RoleAcl",
+            required: true
         }
     ],
     firstName: {
-        type: String,
+        type: Schema.Types.String,
         required: true,
         trim: true
     },
     lastName: {
-        type: String,
+        type: Schema.Types.String,
         required: true,
         trim: true
     }
 }, {timestamps: true});
 
-const genSalt = rsvp.denodeify(bcrypt.genSalt);
-const genHash = rsvp.denodeify(bcrypt.hash);
+const genSalt = RSVP.denodeify(BCRYPT.genSalt);
+const genHash = RSVP.denodeify(BCRYPT.hash);
 
 
 // Save user hash password when password is new or modified
@@ -54,9 +52,20 @@ UserSchema.pre("save", function (next) {
             .then((hash) => {
                 this.password = hash;
                 if (this.roles.length === 0) {
-                    this.roles.push("Client");
+                    RoleAclModel.findOne({name: "Client"})
+                        .lean()
+                        .exec()
+                        .then((role) => {
+                            this.roles.push(role);
+                            next();
+                        })
+                        .catch((error) => {
+                            logger.error("RoleAclModel", error);
+                            throw error;
+                        });
+                } else {
+                    return next();
                 }
-                next();
             })
             .catch((error) => {
                 next(error);

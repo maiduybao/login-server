@@ -27,13 +27,14 @@ class AuthController {
                 userService.comparePassword(req.body.password, user.password)
                     .then((isMatched) => {
                         if (isMatched) {
+                            logger.info("user", JSON.stringify(user));
                             const {_id: id, email, firstName, lastName, roles} = user;
                             const payload = {
                                 id,
                                 email,
                                 firstName,
                                 lastName,
-                                roles
+                                roles: roles.map((role) => role.name)
                             };
                             const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
                             res.json({

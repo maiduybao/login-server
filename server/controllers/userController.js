@@ -56,6 +56,7 @@ class UserController {
                 const payload = users.map((user) => {
                     const {_id: id, ...rest} = user;
                     const others = omit(rest, ["password", "__v"]);
+                    others.roles = others.roles.map((role) => role.name);
                     return {
                         id,
                         ...others
@@ -75,6 +76,7 @@ class UserController {
             .then((user) => {
                 const {_id: id, ...rest} = user;
                 const others = omit(rest, ["password", "__v"]);
+                others.roles = others.roles.map((role) => role.name);
                 const payload = {
                     id,
                     ...others

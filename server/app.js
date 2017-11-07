@@ -5,22 +5,26 @@ import log4js from "log4js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import rsvp from "rsvp";
+import RSVP from "rsvp";
 import passport from "passport";
-import cors from "cors";
+import CORS from "cors";
 // app configs
 import {dbConfig, logConfig} from "./config";
-import passportService from "./services/passport";
+import PassportService from "./services/passport";
 
 // controllers
 import AuthController from "./controllers/authController";
 import UserController from "./controllers/userController";
 
+// services
+import RoleAclService from "./services/roleAclService";
+import UserService from "./services/userService";
+
 
 const app = express();
 
 class App {
-    constructor () {
+    constructor() {
         this.initLogger();
         this.initViewEngine();
         this.initExpressMiddleware();
@@ -28,27 +32,29 @@ class App {
         this.initRoutes();
     }
 
-    initLogger () {
+    initLogger() {
         log4js.configure(logConfig);
     }
 
-    initDB () {
+    initDB() {
         const logger = log4js.getLogger("mongodb");
         // set promise for mongodb
-        mongoose.Promise = rsvp.Promise;
+        mongoose.Promise = RSVP.Promise;
         // mongodb connection
         mongoose.connect(dbConfig.uri, dbConfig.options)
-        .then(() => {
-            logger.debug("connected to mongodb");
-        })
-        .catch((error) => {
-            logger.fatal(error);
-            process.exit(1);
-        });
+            .then(() => {
+                logger.debug("connected to mongodb");
+            })
+            .then(() => RoleAclService.populateDefaultRoles())
+            .then(() => UserService.populateDefaultUser())
+            .catch((error) => {
+                logger.fatal(error);
+                process.exit(1);
+            });
 
     }
 
-    initExpressMiddleware () {
+    initExpressMiddleware() {
         app.use(log4js.connectLogger(log4js.getLogger("http"), {level: "auto"}));
         //     app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
         app.use(bodyParser.json());
@@ -56,11 +62,11 @@ class App {
         app.use(cookieParser());
         app.use(express.static(path.join("./public")));
         // allow for cross-origin API requests
-        app.use(cors());
+        app.use(CORS());
 
         // initialize passport
         app.use(passport.initialize());
-        passportService(passport);
+        PassportService(passport);
 
         // catch 404 and forward to error handler
 
@@ -92,12 +98,12 @@ class App {
         */
     }
 
-    initViewEngine () {
+    initViewEngine() {
         app.set("views", "./views");
         app.set("view engine", "hbs");
     }
 
-    initRoutes () {
+    initRoutes() {
         const apiRouter = Router();
         app.use("/api", apiRouter);
 
