@@ -15,6 +15,8 @@ import PassportService from "./services/passport";
 // controllers
 import AuthController from "./controllers/authController";
 import UserController from "./controllers/userController";
+import RoleAclController from "./controllers/roleAclConntroller";
+
 
 // services
 import RoleAclService from "./services/roleAclService";
@@ -112,6 +114,7 @@ class App {
 
         new AuthController(apiV1);
         new UserController(apiV1);
+        new RoleAclController(apiV1);
     }
 }
 

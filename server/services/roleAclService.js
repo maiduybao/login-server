@@ -37,6 +37,10 @@ class RoleAclService {
                             {
                                 resource: "users",
                                 permissions: ["*"]
+                            },
+                            {
+                                resource: "roles",
+                                permissions: ["*"]
                             }
                         ]
                     });
@@ -50,12 +54,55 @@ class RoleAclService {
             });
     }
 
+    getRoleById(id) {
+        return RoleAclModel.findById(id)
+            .lean()
+            .exec()
+            .catch((error) => {
+                logger.error("getRoleById", error);
+                throw error;
+            });
+    }
+
+    getRoles() {
+        return RoleAclModel.find()
+            .lean()
+            .exec()
+            .catch((error) => {
+                logger.error("getRoles", error);
+                throw error;
+            });
+    }
+
+
     getRoleByName(name) {
         return RoleAclModel.findOne({name})
             .lean()
             .exec()
             .catch((error) => {
                 logger.error("getRoleByName", error);
+                throw error;
+            });
+    }
+
+    updateRole(id, update) {
+        return RoleAclModel.findByIdAndUpdate(id, update, {new: true})
+            .lean()
+            .exec()
+            .catch((error) => {
+                logger.error("updateRole", error);
+                throw error;
+            });
+    }
+
+    addAllowToRole(roleId, allow) {
+        return this.getRoleById(roleId)
+            .then((role) => {
+                role.allows.push(allow);
+                return role.save();
+            })
+            .catch((error) => {
+                logger.error("addAllowToRole", error);
                 throw error;
             });
     }

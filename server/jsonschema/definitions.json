@@ -1,0 +1,37 @@
+{
+  "$id": "http://baomai.com/schemas/definitions.json",
+  "definitions": {
+    "allow": {
+      "type": "object",
+      "description": "single allow rule",
+      "properties": {
+        "resource": {
+          "type": "string",
+          "description": "name of permitted resource"
+        },
+        "type": {
+          "type": "string",
+          "description": "resource type",
+          "enum": [
+            "API",
+            "VIEW"
+          ],
+          "default": "API"
+        },
+        "permissions": {
+          "type": "array",
+          "description": "permission like read, write, list...",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "resource",
+        "permissions"
+      ]
+    }
+  }
+}

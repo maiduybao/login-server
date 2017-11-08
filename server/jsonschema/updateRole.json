@@ -1,0 +1,25 @@
+{
+  "$id": "http://baomai.com/schemas/updateRole.json",
+  "title": "PUT /api/v1/roles/:id",
+  "description": "update existing role",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "role name"
+    },
+    "allows": {
+      "type": "array",
+      "description": "allow rules",
+      "items": {
+        "$ref": "definitions.json#/definitions/allow"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "allows"
+  ]
+}

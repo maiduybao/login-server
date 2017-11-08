@@ -1,6 +1,8 @@
 import Ajv from "ajv";
+import DefinitionsSchema from "../jsonschema/definitions.json";
 
 const ajv = new Ajv();
+ajv.addSchema(DefinitionsSchema);
 
 /**
  * @description middleware for input validation
