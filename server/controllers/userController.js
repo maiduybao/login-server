@@ -1,7 +1,7 @@
 import log4js from "log4js";
-import {omit} from "lodash";
+import omit from "lodash/omit";
 // services
-import userService from "../services/userService";
+import UserService from "../services/userService";
 // middleware
 import authenticated from "../middleware/authenticated";
 import validate from "../middleware/validate";
@@ -33,7 +33,7 @@ class UserController {
     }
 
     getUser(req, res) {
-        userService.getUserById(req.params.id)
+        UserService.getUserById(req.params.id)
             .then((user) => {
                 const {_id: id, ...rest} = user;
                 const others = omit(rest, ["password", "__v"]);
@@ -51,7 +51,7 @@ class UserController {
     }
 
     getUsers(req, res) {
-        userService.getUsers()
+        UserService.getUsers()
             .then((users) => {
                 const payload = users.map((user) => {
                     const {_id: id, ...rest} = user;
@@ -72,7 +72,7 @@ class UserController {
     }
 
     updateUser(req, res) {
-        userService.updateUser(req.params.id, req.body)
+        UserService.updateUser(req.params.id, req.body)
             .then((user) => {
                 const {_id: id, ...rest} = user;
                 const others = omit(rest, ["password", "__v"]);
@@ -91,7 +91,7 @@ class UserController {
     }
 
     addUser(req, res) {
-        userService.addUser(req.body)
+        UserService.addUser(req.body)
             .then((user) => {
                 if (user) {
                     res.status(201).json({id: user._id});
