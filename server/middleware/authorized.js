@@ -18,7 +18,7 @@ const parseResourcePermissions = (permission) => {
     };
 };
 
-const filterPermissionByResource = (userRoles, resource) => {
+const getAllowPermissionByResource = (userRoles, resource) => {
     let permissions = [];
     forEach(userRoles, (role) => {
         const filterAllows = filter(role.allows, (allow) => allow.resource === resource);
@@ -36,11 +36,11 @@ export default (permission) => (req, res, next) => {
     const {roles} = req.user;
     logger.info("user roles", JSON.stringify(roles));
     const resourcePermission = parseResourcePermissions(permission);
-    const userRolePermissions = filterPermissionByResource(roles, resourcePermission.resource);
-    if (userRolePermissions.length > 0) {
-        logger.info("userRolePermissions", userRolePermissions);
-        if (find(userRolePermissions, (allow) => allow === "*") ||
-            intersection(resourcePermission.permissions, userRolePermissions).length !== 0) {
+    const userAllowPermissions = getAllowPermissionByResource(roles, resourcePermission.resource);
+    if (userAllowPermissions.length > 0) {
+        logger.info("userAllowPermissions", userAllowPermissions);
+        if (find(userAllowPermissions, (allow) => allow === "*") ||
+            intersection(resourcePermission.permissions, userAllowPermissions).length !== 0) {
             return next();
         }
     }
