@@ -2,6 +2,9 @@
   "name": "login-app",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
     "start": "node ./dist/server.js",
     "start:dev": "nodemon ./dist/server.js",
@@ -21,7 +24,7 @@
     "jsonwebtoken": "^7.4.3",
     "lodash": "^4.17.4",
     "log4js": "^2.3.11",
-    "mongoose": "^4.13.0",
+    "mongoose": "^4.13.1",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^3.0.1",

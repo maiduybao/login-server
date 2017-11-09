@@ -1,5 +1,5 @@
 {
-  "$id": "http://baomai.com/schemas/authentication.json",
+  "$id": "/schemas/authentication.json",
   "title": "POST /api/authenticate",
   "description": "Authenticate a login user",
   "type": "object",

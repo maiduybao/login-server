@@ -21,7 +21,7 @@ const parseResourcePermissions = (permission) => {
 const getAllowPermissionByResource = (userRoles, resource) => {
     let permissions = [];
     forEach(userRoles, (role) => {
-        const filterAllows = filter(role.allows, (allow) => allow.resource === resource);
+        const filterAllows = filter(role.allows, (allow) => (allow.resource === "*" || allow.resource === resource) && allow.type === "API");
         if (filterAllows.length > 0) {
             const permissionGroupList = map(filterAllows, (filterAllow) => filterAllow.permissions);
             forEach(permissionGroupList, (permissionGroup) => {

@@ -1,5 +1,5 @@
 {
-  "$id": "http://baomai.com/schemas/addUser.json",
+  "$id": "/schemas/addUser.json",
   "title": "POST /api/v1/users",
   "description": "restricted add a new user",
   "type": "object",

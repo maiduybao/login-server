@@ -1,5 +1,5 @@
 {
-  "$id": "http://baomai.com/schemas/updateUser.json",
+  "$id": "/schemas/updateUser.json",
   "title": "PUT /api/v1/users/:id",
   "description": "update existing user",
   "type": "object",

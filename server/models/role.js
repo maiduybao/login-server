@@ -15,12 +15,10 @@ const RoleAclSchema = new Schema({
             resource: {
                 type: Schema.Types.String,
                 required: true,
-                trim: true,
-                unique: true
+                trim: true
             },
             type: {
                 type: Schema.Types.String,
-                required: true,
                 trim: true,
                 enum: [
                     "API",
@@ -32,6 +30,7 @@ const RoleAclSchema = new Schema({
                 {
                     type: Schema.Types.String,
                     trim: true,
+                    required: true,
                     unique: true
                 }
             ]

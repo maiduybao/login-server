@@ -1,5 +1,5 @@
 {
-  "$id": "http://baomai.com/schemas/definitions.json",
+  "$id": "/schemas/definitions.json",
   "definitions": {
     "allow": {
       "type": "object",
