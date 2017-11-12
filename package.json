@@ -6,8 +6,9 @@
     "node": ">=8"
   },
   "scripts": {
+    "babel-node": "babel-node --presets=env",
     "start": "node ./dist/server.js",
-    "start:dev": "nodemon ./dist/server.js",
+    "start:dev": "nodemon --exec npm run babel-node -- ./dist/server.js",
     "lint": "eslint --ext .js server/",
     "build": "webpack",
     "fix": "eslint --fix --debug --ext .js server/"
@@ -33,6 +34,7 @@
     "swagger-tools": "^0.10.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.2",
