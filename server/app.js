@@ -58,7 +58,7 @@ class App {
 
     initExpressMiddleware() {
         app.use(log4js.connectLogger(log4js.getLogger("http"), {level: "auto"}));
-        //     app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+        // app.use(favicon(path.join("./public", "favicon.ico")));
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(cookieParser());
@@ -106,6 +106,10 @@ class App {
     }
 
     initRoutes() {
+        app.get("/ping", (req, res) => {
+            res.json({success: true});
+        });
+
         const apiRouter = Router();
         app.use("/api", apiRouter);
 
