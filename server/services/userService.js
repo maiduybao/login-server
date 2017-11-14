@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import RSVP from "rsvp";
 
 import UserModel from "../models/user";
-import RoleAclModel from "../models/role";
+import RoleModel from "../models/role";
 
 
 const logger = log4js.getLogger("UserService");
@@ -15,7 +15,7 @@ class UserService {
             .then((count) => {
                 if (count === 0) {
                     logger.info("add default user");
-                    return RoleAclModel.findOne({name: "Admin"})
+                    return RoleModel.findOne({name: "Admin"})
                         .lean()
                         .exec()
                         .then((role) => {

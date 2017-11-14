@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+
 import BCRYPT from "bcrypt";
 import RSVP from "rsvp";
 import RoleAclModel from "./role";
@@ -23,7 +24,7 @@ const UserSchema = new Schema({
     roles: [
         {
             type: Schema.Types.ObjectId,
-            ref: "RoleAcl",
+            ref: "Role",
             required: true
         }
     ],

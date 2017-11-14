@@ -1,9 +1,11 @@
 import mongoose, {Schema} from "mongoose";
+// import arrayUniquePlugin from "mongoose-unique-array";
+
 import RSVP from "rsvp";
 
 mongoose.Promise = RSVP.Promise;
 
-const RoleAclSchema = new Schema({
+const RoleSchema = new Schema({
     name: {
         type: Schema.Types.String,
         trim: true,
@@ -15,7 +17,8 @@ const RoleAclSchema = new Schema({
             resource: {
                 type: Schema.Types.String,
                 required: true,
-                trim: true
+                trim: true,
+                unique: true
             },
             type: {
                 type: Schema.Types.String,
@@ -26,7 +29,7 @@ const RoleAclSchema = new Schema({
                 ],
                 default: "API"
             },
-            permissions: [
+            operations: [
                 {
                     type: Schema.Types.String,
                     trim: true,
@@ -38,4 +41,4 @@ const RoleAclSchema = new Schema({
     ]
 }, {timestamps: true});
 
-export default mongoose.model("RoleAcl", RoleAclSchema);
+export default mongoose.model("Role", RoleSchema);

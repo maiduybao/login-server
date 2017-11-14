@@ -11,16 +11,16 @@
         },
         "type": {
           "type": "string",
-          "description": "resource type",
+          "description": "resource group type",
           "enum": [
             "API",
             "VIEW"
           ],
           "default": "API"
         },
-        "permissions": {
+        "operations": {
           "type": "array",
-          "description": "permission like read, write, list...",
+          "description": "operation like read, readwrite, list...",
           "items": {
             "type": "string"
           },
@@ -30,7 +30,7 @@
       "additionalProperties": false,
       "required": [
         "resource",
-        "permissions"
+        "operations"
       ]
     }
   }

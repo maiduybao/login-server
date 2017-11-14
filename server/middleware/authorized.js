@@ -14,33 +14,33 @@ const parseResourcePermissions = (permission) => {
     const data = permission.split(":");
     return {
         resource: data[0],
-        permissions: data[1].split(",").map((item) => item.trim())
+        operations: data[1].split(",").map((item) => item.trim())
     };
 };
 
-const getAllowPermissionByResource = (userRoles, resource) => {
-    let permissions = [];
+const getAllowOperationsByResource = (userRoles, resource) => {
+    let operations = [];
     forEach(userRoles, (role) => {
         const filterAllows = filter(role.allows, (allow) => (allow.resource === "*" || allow.resource === resource) && allow.type === "API");
         if (filterAllows.length > 0) {
-            const permissionGroupList = map(filterAllows, (filterAllow) => filterAllow.permissions);
+            const permissionGroupList = map(filterAllows, (filterAllow) => filterAllow.operations);
             forEach(permissionGroupList, (permissionGroup) => {
-                permissions = union(permissions, permissionGroup);
+                operations = union(operations, permissionGroup);
             });
         }
     });
-    return permissions;
+    return operations;
 };
 
-export default (permission) => (req, res, next) => {
+export default (permissions) => (req, res, next) => {
     const {roles} = req.user;
     logger.info("user roles", JSON.stringify(roles));
-    const resourcePermission = parseResourcePermissions(permission);
-    const userAllowPermissions = getAllowPermissionByResource(roles, resourcePermission.resource);
-    if (userAllowPermissions.length > 0) {
-        logger.info("userAllowPermissions", userAllowPermissions);
-        if (find(userAllowPermissions, (allow) => allow === "*") ||
-            intersection(resourcePermission.permissions, userAllowPermissions).length !== 0) {
+    const resourcePermission = parseResourcePermissions(permissions);
+    const userAllowOperations = getAllowOperationsByResource(roles, resourcePermission.resource);
+    if (userAllowOperations.length > 0) {
+        logger.info("userAllowOperations", userAllowOperations);
+        if (find(userAllowOperations, (allow) => allow === "*") ||
+            intersection(resourcePermission.operations, userAllowOperations).length !== 0) {
             return next();
         }
     }

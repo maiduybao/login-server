@@ -2,7 +2,7 @@ import log4js from "log4js";
 import omit from "lodash/omit";
 
 // services
-import RoleAclService from "../services/roleAclService";
+import RoleService from "../services/roleService";
 // middleware
 import authenticated from "../middleware/authenticated";
 import validate from "../middleware/validate";
@@ -11,10 +11,10 @@ import authorized from "../middleware/authorized";
 // Json Schema
 import updateRoleSchema from "../jsonschema/updateRole.json";
 
-const logger = log4js.getLogger("RoleAclController");
+const logger = log4js.getLogger("RoleController");
 
 
-class RoleAclController {
+class RoleController {
     constructor(router) {
         this.router = router;
         this.urlMapping();
@@ -26,11 +26,11 @@ class RoleAclController {
     urlMapping() {
         this.router.get("/roles", authenticated, authorized("roles:list"), this.getRoles);
         this.router.get("/users/:id", authenticated, authorized("roles:read"), this.getRole);
-        this.router.put("/roles/:id", authenticated, authorized("roles:write"), validate(updateRoleSchema), this.updateRole);
+        this.router.put("/roles/:id", authenticated, authorized("roles:readwrite"), validate(updateRoleSchema), this.updateRole);
     }
 
     getRoles(req, res) {
-        RoleAclService.getRoles()
+        RoleService.getRoles()
             .then((roles) => {
                 const payload = roles.map((user) => {
                     const {_id: id, ...rest} = user;
@@ -51,7 +51,7 @@ class RoleAclController {
 
 
     getRole(req, res) {
-        RoleAclService.getRoleById(req.params.id)
+        RoleService.getRoleById(req.params.id)
             .then((user) => {
                 const {_id: id, ...rest} = user;
                 const others = omit(rest, ["password", "__v"]);
@@ -69,7 +69,7 @@ class RoleAclController {
     }
 
     updateRole(req, res) {
-        RoleAclService.updateRole(req.params.id, req.body)
+        RoleService.updateRole(req.params.id, req.body)
             .then((role) => {
                 const {_id: id, ...rest} = role;
                 const others = omit(rest, ["password", "__v"]);
@@ -88,4 +88,4 @@ class RoleAclController {
 
 }
 
-export default RoleAclController;
+export default RoleController;

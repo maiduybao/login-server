@@ -27,9 +27,9 @@ class UserController {
     urlMapping() {
         this.router.get("/users", authenticated, authorized("users:list"), this.getUsers);
         this.router.get("/users/:id", authenticated, authorized("users:read"), this.getUser);
-        this.router.post("/users", authenticated, authorized("users:write"), validate(addUserSchema), this.addUser);
+        this.router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.addUser);
         this.router.post("/users/register", validate(registerUserSchema), this.addUser);
-        this.router.put("/users/:id", authenticated, authorized("users:write"), validate(updateUserSchema), this.updateUser);
+        this.router.put("/users/:id", authenticated, authorized("users:readwrite"), validate(updateUserSchema), this.updateUser);
     }
 
     getUser(req, res) {
