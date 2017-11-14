@@ -1,46 +1,46 @@
 import log4js from "log4js";
 import RSVP from "rsvp";
 
-import RoleAclModel from "../models/role";
+import RoleModel from "../models/role";
 
-const logger = log4js.getLogger("RoleAclService");
+const logger = log4js.getLogger("RoleService");
 
-class RoleAclService {
+class RoleService {
     populateDefaultRoles() {
-        return RoleAclModel.count({}).exec()
+        return RoleModel.count({}).exec()
             .then((count) => {
                 if (count === 0) {
                     logger.info("add default Role based ACLs");
-                    let userRoleAcl = new RoleAclModel({
+                    let userRoleAcl = new RoleModel({
                         name: "Client",
                         allows: [
                             {
                                 resource: "users",
-                                permissions: ["read"]
+                                operations: ["read"]
                             }
                         ]
                     });
                     userRoleAcl.save();
-                    userRoleAcl = new RoleAclModel({
+                    userRoleAcl = new RoleModel({
                         name: "Manager",
                         allows: [
                             {
                                 resource: "users",
-                                permissions: ["read"]
+                                operations: ["read"]
                             }
                         ]
                     });
                     userRoleAcl.save();
-                    userRoleAcl = new RoleAclModel({
+                    userRoleAcl = new RoleModel({
                         name: "Admin",
                         allows: [
                             {
                                 resource: "users",
-                                permissions: ["*"]
+                                operations: ["*"]
                             },
                             {
                                 resource: "roles",
-                                permissions: ["*"]
+                                operations: ["*"]
                             }
                         ]
                     });
@@ -55,7 +55,7 @@ class RoleAclService {
     }
 
     getRoleById(id) {
-        return RoleAclModel.findById(id)
+        return RoleModel.findById(id)
             .lean()
             .exec()
             .catch((error) => {
@@ -65,7 +65,7 @@ class RoleAclService {
     }
 
     getRoles() {
-        return RoleAclModel.find()
+        return RoleModel.find()
             .lean()
             .exec()
             .catch((error) => {
@@ -76,7 +76,7 @@ class RoleAclService {
 
 
     getRoleByName(name) {
-        return RoleAclModel.findOne({name})
+        return RoleModel.findOne({name})
             .lean()
             .exec()
             .catch((error) => {
@@ -86,7 +86,7 @@ class RoleAclService {
     }
 
     updateRole(id, update) {
-        return RoleAclModel.findByIdAndUpdate(id, update, {new: true})
+        return RoleModel.findByIdAndUpdate(id, update, {new: true})
             .lean()
             .exec()
             .catch((error) => {
@@ -108,4 +108,4 @@ class RoleAclService {
     }
 }
 
-export default new RoleAclService();
+export default new RoleService();
