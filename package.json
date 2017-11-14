@@ -10,13 +10,13 @@
     "start": "node ./dist/server.js",
     "start:dev": "nodemon --exec npm run babel-node -- ./dist/server.js",
     "lint": "eslint --ext .js server/",
-    "build": "webpack",
+    "build": "webpack -p",
     "fix": "eslint --fix --debug --ext .js server/"
   },
   "dependencies": {
     "ajv": "^5.3.0",
     "bcrypt": "^1.0.3",
-    "body-parser": "^1.17.1",
+    "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "debug": "^2.6.9",
@@ -24,8 +24,8 @@
     "hbs": "^4.0.1",
     "jsonwebtoken": "^7.4.3",
     "lodash": "^4.17.4",
-    "log4js": "^2.3.11",
-    "mongoose": "^4.13.1",
+    "log4js": "^2.3.12",
+    "mongoose": "^4.13.2",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^3.0.1",
@@ -42,9 +42,10 @@
     "babel-preset-stage-3": "^6.24.1",
     "clean-webpack-plugin": "^0.1.17",
     "copy-webpack-plugin": "^4.2.0",
-    "eslint": "^4.10.0",
+    "eslint": "^4.11.0",
     "eslint-loader": "^1.9.0",
     "file-loader": "^0.11.2",
+    "uglifyjs-webpack-plugin": "^1.0.1",
     "webpack": "^3.8.1",
     "webpack-node-externals": "^1.6.0"
   }

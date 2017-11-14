@@ -1,10 +1,11 @@
-// const webpack = require('webpack');
+const webpack = require("webpack");
 const path = require("path");
 // const fs = require('fs');
 
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 const PROJECT_PATHS = {
     src: path.resolve(__dirname, "server"),
@@ -42,6 +43,14 @@ module.exports = {
         ]
     },
     externals: [nodeExternals()],
-    plugins: [new CleanWebpackPlugin([PROJECT_PATHS.build])],
+    plugins: [
+        new webpack.DefinePlugin({"process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development")}),
+        new CleanWebpackPlugin([PROJECT_PATHS.build]),
+    ].concat(process.env.NODE_ENV === "production" ? [
+        new UglifyJSPlugin({
+            sourceMap: true,
+            uglifyOptions: {warnings: false}
+        })
+    ] : []),
     devtool: "source-map"
 };
