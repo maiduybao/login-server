@@ -42,17 +42,31 @@ class AuthController {
                                 tokenType: "Bearer"
                             });
                         } else {
-                            res.status(401).json({error: {message: "Invalid email/password combination"}});
+                            // NOT FOUND
+                            res.status(404).json({
+                                status: 404,
+                                success: false,
+                                message: "Invalid email/password combination"
+                            });
                         }
                     })
                     .catch((error) => {
                         logger.error("authenticate", error);
-                        res.status(401).json({error: {message: "Invalid email/password combination"}});
+                        res.status(404).json({
+                            status: 404,
+                            success: false,
+                            message: "Invalid email/password combination"
+                        });
                     });
             })
             .catch((error) => {
                 logger.error("authenticate", error);
-                res.status(404).json({error: {message: "Email does not exist"}});
+                // NOT FOUND
+                res.status(404).json({
+                    status: 404,
+                    success: false,
+                    message: "Email does not exist"
+                });
             });
     }
 }
