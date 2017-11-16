@@ -27,8 +27,8 @@ class UserController {
     urlMapping() {
         this.router.get("/users", authenticated, authorized("users:list"), this.getUsers);
         this.router.get("/users/:id", authenticated, authorized("users:read"), this.getUser);
-        this.router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.addUser);
-        this.router.post("/users/register", validate(registerUserSchema), this.addUser);
+        this.router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.registerUser);
+        this.router.post("/users/register", validate(registerUserSchema), this.registerUser);
         this.router.put("/users/:id", authenticated, authorized("users:readwrite"), validate(updateUserSchema), this.updateUser);
     }
 
@@ -41,12 +41,18 @@ class UserController {
                     id,
                     ...others
                 };
-                res.send(payload);
+                res.json(payload);
             })
             .catch((error) => {
                 logger.error("getUser", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json(
+                    {
+                        status: 404,
+                        success: false,
+                        message: "user is not found in the system"
+                    }
+                );
             });
     }
 
@@ -67,7 +73,13 @@ class UserController {
             .catch((error) => {
                 logger.error("getUsers", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json(
+                    {
+                        status: 404,
+                        success: false,
+                        message: "user is not found in the system"
+                    }
+                );
             });
     }
 
@@ -86,27 +98,60 @@ class UserController {
             .catch((error) => {
                 logger.error("updateUser", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json(
+                    {
+                        status: 404,
+                        success: false,
+                        message: "user is not found in the system"
+                    }
+                );
             });
     }
 
-    addUser(req, res) {
-        UserService.addUser(req.body)
-            .then((user) => {
-                if (user) {
-                    res.status(201).json({id: user._id});
-                } else {
-                    // CONFLICT
-                    res.status(409).json(
-                        {error: {message: "email is already exist"}}
+    registerUser(req, res) {
+        if (req.body.password === req.body.confirmPassword) {
+            const registerUser = req.body;
+            delete registerUser.confirmPassword;
+            UserService.addUser(registerUser)
+                .then((user) => {
+                    if (user) {
+                        res.status(201).json({
+                            status: 201,
+                            success: true,
+                            id: user._id
+                        });
+                    } else {
+                        // CONFLICT
+                        res.status(409).json(
+                            {
+                                status: 409,
+                                success: false,
+                                message: "email is already exist"
+                            }
+                        );
+                    }
+                })
+                .catch((error) => {
+                    logger.error("registerUser", error);
+                    // BAD REQUEST
+                    res.status(400).json(
+                        {
+                            status: 400,
+                            success: false,
+                            message: "bad request"
+                        }
                     );
+                });
+        } else {
+            res.status(400).json(
+                {
+                    status: 400,
+                    success: false,
+                    message: "password and confirm password is not match"
                 }
-            })
-            .catch((error) => {
-                logger.error("addUser", error);
-                // BAD REQUEST
-                res.sendStatus(400);
-            });
+            );
+        }
+
     }
 }
 

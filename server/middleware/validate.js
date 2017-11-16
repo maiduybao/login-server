@@ -16,12 +16,11 @@ export default (schema) => {
             return next();
         }
         const [error] = validate.errors;
-        const {dataPath, message} = error;
+        const {message} = error;
         res.status(400).json({
-            error: {
-                message,
-                context: {input: dataPath.substr(1)}
-            }
+            status: 400,
+            success: false,
+            message
         });
     };
 };

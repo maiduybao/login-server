@@ -40,12 +40,16 @@ class RoleController {
                         ...others
                     };
                 });
-                res.send(payload);
+                res.json(payload);
             })
             .catch((error) => {
                 logger.error("getRoles", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json({
+                    status: 404,
+                    success: false,
+                    message: "there are no role in the system"
+                });
             });
     }
 
@@ -59,12 +63,16 @@ class RoleController {
                     id,
                     ...others
                 };
-                res.send(payload);
+                res.json(payload);
             })
             .catch((error) => {
-                logger.error("getUser", error);
+                logger.error("getRole", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json({
+                    status: 404,
+                    success: false,
+                    message: "role is not found in the system"
+                });
             });
     }
 
@@ -77,12 +85,16 @@ class RoleController {
                     id,
                     ...others
                 };
-                res.send(payload);
+                res.json(payload);
             })
             .catch((error) => {
                 logger.error("updateRole", error);
                 // NOT FOUND
-                res.sendStatus(404);
+                res.status(404).json({
+                    status: 404,
+                    success: false,
+                    message: "role is not found in the system"
+                });
             });
     }
 

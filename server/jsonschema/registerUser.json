@@ -15,6 +15,12 @@
       "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$",
       "description": "password consisting of 6 or more characters with uppercase, lowercase, and number"
     },
+    "confirmPassword": {
+      "type": "string",
+      "minLength": 6,
+      "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$",
+      "description": "must be match with the password"
+    },
     "firstName": {
       "type": "string",
       "minLength": 2
@@ -29,6 +35,7 @@
     "email",
     "password",
     "firstName",
-    "lastName"
+    "lastName",
+    "confirmPassword"
   ]
 }

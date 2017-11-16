@@ -44,5 +44,9 @@ export default (permissions) => (req, res, next) => {
             return next();
         }
     }
-    res.status(403).json({error: {message: "Permission Denied"}});
+    res.status(403).json({
+        status: 403,
+        success: false,
+        message: "permission denied"
+    });
 };
