@@ -6,53 +6,6 @@ import RoleModel from "../models/role";
 const logger = log4js.getLogger("RoleService");
 
 class RoleService {
-    populateDefaultRoles() {
-        return RoleModel.count({}).exec()
-            .then((count) => {
-                if (count === 0) {
-                    logger.info("add default Role based ACLs");
-                    let userRoleAcl = new RoleModel({
-                        name: "Client",
-                        allows: [
-                            {
-                                resource: "users",
-                                operations: ["read"]
-                            }
-                        ]
-                    });
-                    userRoleAcl.save();
-                    userRoleAcl = new RoleModel({
-                        name: "Manager",
-                        allows: [
-                            {
-                                resource: "users",
-                                operations: ["read"]
-                            }
-                        ]
-                    });
-                    userRoleAcl.save();
-                    userRoleAcl = new RoleModel({
-                        name: "Admin",
-                        allows: [
-                            {
-                                resource: "users",
-                                operations: ["*"]
-                            },
-                            {
-                                resource: "roles",
-                                operations: ["*"]
-                            }
-                        ]
-                    });
-                    userRoleAcl.save();
-                    return RSVP.resolve();
-                }
-            })
-            .catch((error) => {
-                logger.error("populateDefaultRoles", error);
-                throw error;
-            });
-    }
 
     getRoleById(id) {
         return RoleModel.findById(id)

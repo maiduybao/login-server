@@ -17,12 +17,6 @@ import AuthController from "./controllers/authController";
 import UserController from "./controllers/userController";
 import RoleAclController from "./controllers/roleConntroller";
 
-
-// services
-import RoleAclService from "./services/roleService";
-import UserService from "./services/userService";
-
-
 const app = express();
 
 class App {
@@ -48,8 +42,6 @@ class App {
             .then(() => {
                 logger.info("connected to mongodb");
             })
-            .then(() => RoleAclService.populateDefaultRoles())
-            .then(() => UserService.populateDefaultUser())
             .catch((error) => {
                 logger.fatal(error);
                 process.exit(1);

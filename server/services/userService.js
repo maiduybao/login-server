@@ -10,32 +10,6 @@ const logger = log4js.getLogger("UserService");
 
 class UserService {
 
-    populateDefaultUser() {
-        return UserModel.count({}).exec()
-            .then((count) => {
-                if (count === 0) {
-                    logger.info("add default user");
-                    return RoleModel.findOne({name: "Admin"})
-                        .lean()
-                        .exec()
-                        .then((role) => {
-                            const defaultUser = new UserModel({
-                                email: "maiduybao@gmail.com",
-                                password: "Mypassword2",
-                                firstName: "Bao",
-                                lastName: "Mai",
-                                roles: [role]
-                            });
-                            return defaultUser.save();
-                        });
-                }
-            })
-            .catch((error) => {
-                logger.error("populateDefaultRoles", error);
-                throw error;
-            });
-    }
-
     getUserById(id) {
         return UserModel.findById(id)
             .populate("roles")
