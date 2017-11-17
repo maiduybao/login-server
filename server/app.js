@@ -40,12 +40,13 @@ class App {
 
     initDB() {
         const logger = log4js.getLogger("mongodb");
+        logger.level = "info";
         // set promise for mongodb
         mongoose.Promise = RSVP.Promise;
         // mongodb connection
         mongoose.connect(dbConfig.uri, dbConfig.options)
             .then(() => {
-                logger.debug("connected to mongodb");
+                logger.info("connected to mongodb");
             })
             .then(() => RoleAclService.populateDefaultRoles())
             .then(() => UserService.populateDefaultUser())

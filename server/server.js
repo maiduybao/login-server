@@ -31,11 +31,11 @@ class Server {
             // handle specific listen errors with friendly messages
             switch (error.code) {
                 case "EACCES":
-                    logger.error(`${bind} requires elevated privileges`);
+                    logger.fatal(`${bind} requires elevated privileges`);
                     process.exit(1);
                     break;
                 case "EADDRINUSE":
-                    logger.error(`${bind} is already in use`);
+                    logger.fatal(`${bind} is already in use`);
                     process.exit(1);
                     break;
                 default:
@@ -46,7 +46,7 @@ class Server {
         httpServer.on("listening", () => {
             const addr = httpServer.address();
             const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
-            logger.debug(`HTTP Listening on ${bind}`);
+            logger.info(`HTTP Listening on ${bind}`);
         });
     }
 
@@ -75,11 +75,11 @@ class Server {
 
                 switch (error.code) {
                     case "EACCES":
-                        logger.error(`${bind} requires elevated privileges`);
+                        logger.fatal(`${bind} requires elevated privileges`);
                         process.exit(1);
                         break;
                     case "EADDRINUSE":
-                        logger.error(`${bind} is already in use`);
+                        logger.fatal(`${bind} is already in use`);
                         process.exit(1);
                         break;
                     default:
@@ -91,7 +91,7 @@ class Server {
             httpsServer.on("listening", () => {
                 const addr = httpsServer.address();
                 const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr.port}`;
-                logger.debug(`HTTPS Listening on ${bind}`);
+                logger.info(`HTTPS Listening on ${bind}`);
             });
 
 

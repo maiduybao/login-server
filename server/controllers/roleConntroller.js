@@ -47,7 +47,6 @@ class RoleController {
                 // NOT FOUND
                 res.status(404).json({
                     status: 404,
-                    success: false,
                     message: "there are no role in the system"
                 });
             });
@@ -70,7 +69,6 @@ class RoleController {
                 // NOT FOUND
                 res.status(404).json({
                     status: 404,
-                    success: false,
                     message: "role is not found in the system"
                 });
             });
@@ -92,7 +90,6 @@ class RoleController {
                 // NOT FOUND
                 res.status(404).json({
                     status: 404,
-                    success: false,
                     message: "role is not found in the system"
                 });
             });

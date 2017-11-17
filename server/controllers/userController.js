@@ -49,7 +49,6 @@ class UserController {
                 res.status(404).json(
                     {
                         status: 404,
-                        success: false,
                         message: "user is not found in the system"
                     }
                 );
@@ -76,7 +75,6 @@ class UserController {
                 res.status(404).json(
                     {
                         status: 404,
-                        success: false,
                         message: "user is not found in the system"
                     }
                 );
@@ -101,7 +99,6 @@ class UserController {
                 res.status(404).json(
                     {
                         status: 404,
-                        success: false,
                         message: "user is not found in the system"
                     }
                 );
@@ -115,17 +112,12 @@ class UserController {
             UserService.addUser(registerUser)
                 .then((user) => {
                     if (user) {
-                        res.status(201).json({
-                            status: 201,
-                            success: true,
-                            id: user._id
-                        });
+                        res.status(201).json({id: user._id});
                     } else {
                         // CONFLICT
                         res.status(409).json(
                             {
                                 status: 409,
-                                success: false,
                                 message: "email is already exist"
                             }
                         );
@@ -137,7 +129,6 @@ class UserController {
                     res.status(400).json(
                         {
                             status: 400,
-                            success: false,
                             message: "bad request"
                         }
                     );
@@ -146,7 +137,6 @@ class UserController {
             res.status(400).json(
                 {
                     status: 400,
-                    success: false,
                     message: "password and confirm password is not match"
                 }
             );

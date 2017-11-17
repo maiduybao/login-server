@@ -45,7 +45,6 @@ class AuthController {
                             // NOT FOUND
                             res.status(404).json({
                                 status: 404,
-                                success: false,
                                 message: "Invalid email/password combination"
                             });
                         }
@@ -54,7 +53,6 @@ class AuthController {
                         logger.error("authenticate", error);
                         res.status(404).json({
                             status: 404,
-                            success: false,
                             message: "Invalid email/password combination"
                         });
                     });
@@ -64,7 +62,6 @@ class AuthController {
                 // NOT FOUND
                 res.status(404).json({
                     status: 404,
-                    success: false,
                     message: "Email does not exist"
                 });
             });
