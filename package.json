@@ -7,8 +7,8 @@
   },
   "scripts": {
     "babel-node": "babel-node --presets=env",
-    "start": "node ./dist/server.js",
-    "start:dev": "nodemon --exec npm run babel-node -- ./dist/server.js",
+    "start": "node ./dist/server.min.js",
+    "start:dev": "nodemon --exec npm run babel-node -- ./dist/server.min.js",
     "lint": "eslint --ext .js server/",
     "build": "webpack -p",
     "fix": "eslint --fix --debug --ext .js server/"

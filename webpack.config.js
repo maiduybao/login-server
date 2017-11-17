@@ -17,7 +17,7 @@ module.exports = {
     target: "node",
     output: {
         path: PROJECT_PATHS.build,
-        filename: "server.js",
+        filename: "server.min.js",
         publicPath: "/"
     },
     module: {
@@ -48,7 +48,7 @@ module.exports = {
         new CleanWebpackPlugin([PROJECT_PATHS.build]),
     ].concat(process.env.NODE_ENV === "production" ? [
         new UglifyJSPlugin({
-            sourceMap: true,
+            sourceMap: false,
             uglifyOptions: {warnings: false}
         })
     ] : []),
