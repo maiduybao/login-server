@@ -1,5 +1,4 @@
 import log4js from "log4js";
-import RSVP from "rsvp";
 
 import RoleModel from "../models/role";
 

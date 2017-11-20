@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import RSVP from "rsvp";
 
 import UserModel from "../models/user";
-import RoleModel from "../models/role";
 
 
 const logger = log4js.getLogger("UserService");
