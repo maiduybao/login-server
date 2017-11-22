@@ -37,6 +37,14 @@ const UserSchema = new Schema({
         type: Schema.Types.String,
         required: true,
         trim: true
+    },
+    active: {
+        type: Schema.Types.Boolean,
+        default: false
+    },
+    confirmToken: {
+        type: Schema.Types.String,
+        default: ""
     }
 }, {timestamps: true});
 

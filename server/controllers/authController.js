@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import log4js from "log4js";
 import {jwtConfig} from "../config";
-import userService from "../services/userService";
+import UserService from "../services/userService";
 import validate from "../middleware/validate";
 import credentialSchema from "../jsonschema/authentication.json";
 
@@ -21,26 +21,25 @@ class AuthController {
     }
 
     authenticate(req, res) {
-        const promise = userService.getUserByEmail(req.body.email);
+        const promise = UserService.getUserByEmail(req.body.email);
         promise
             .then((user) => {
-                userService.comparePassword(req.body.password, user.password)
+                UserService.comparePassword(req.body.password, user.password)
                     .then((isMatched) => {
                         if (isMatched) {
-                            logger.info("user", JSON.stringify(user));
-                            const {_id: id, email, firstName, lastName, roles} = user;
-                            const payload = {
-                                id,
-                                email,
-                                firstName,
-                                lastName,
-                                roles: roles.map((role) => role.name)
-                            };
-                            const token = jwt.sign({user: payload}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
-                            res.json({
-                                accessToken: token,
-                                tokenType: "Bearer"
-                            });
+                            if (user.active) {
+                                logger.info("user", JSON.stringify(user));
+                                const token = jwt.sign({user: UserService.briefUserFormat(user)}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
+                                res.status(200).json({
+                                    accessToken: token,
+                                    tokenType: "Bearer"
+                                });
+                            } else {
+                                res.status(404).json({
+                                    status: 404,
+                                    message: "you need to activate your profile"
+                                });
+                            }
                         } else {
                             // NOT FOUND
                             res.status(404).json({

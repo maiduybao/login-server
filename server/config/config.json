@@ -38,5 +38,10 @@
   "jwt": {
     "secretKey": "hqF65AiumUo=",
     "tokenExpires": "1 days"
+  },
+  "mailgun": {
+    "apiKey": "key-fa01b7fbd2de4ca4525a7cc80da8b860",
+    "domain": "sandboxddb891190f83430cbcffef6179c752a4.mailgun.org",
+    "from": "Admin <postmaster@sandboxddb891190f83430cbcffef6179c752a4.mailgun.org>"
   }
 }

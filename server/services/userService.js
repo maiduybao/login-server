@@ -1,6 +1,7 @@
 import log4js from "log4js";
 import bcrypt from "bcrypt";
 import RSVP from "rsvp";
+import omit from "lodash/omit";
 
 import UserModel from "../models/user";
 
@@ -32,7 +33,7 @@ class UserService {
     }
 
     updateUser(id, update) {
-        return UserModel.findByIdAndUpdate(id, update, {new: true})
+        return UserModel.findByIdAndUpdate(id, {$set: update}, {new: true})
             .populate("roles")
             .lean()
             .exec()
@@ -79,6 +80,26 @@ class UserService {
         return defer.promise;
     }
 
+    findOneAndUpdate(criteria, update) {
+        return UserModel.findOneAndUpdate(criteria, {$set: update}, {new: true})
+            .populate("roles")
+            .lean()
+            .exec()
+            .catch((error) => {
+                logger.error("updateUser", error);
+                throw error;
+            });
+    }
+
+    briefUserFormat(user) {
+        const {_id: id, roles, ...rest} = user;
+        const others = omit(rest, ["password", "active", "confirmToken", "__v"]);
+        return {
+            id,
+            ...others,
+            roles: roles.map((role) => role.name)
+        };
+    }
 }
 
 export default new UserService();

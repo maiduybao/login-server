@@ -1,5 +1,4 @@
 import log4js from "log4js";
-import omit from "lodash/omit";
 
 // services
 import RoleService from "../services/roleService";
@@ -32,14 +31,7 @@ class RoleController {
     getRoles(req, res) {
         RoleService.getRoles()
             .then((roles) => {
-                const payload = roles.map((user) => {
-                    const {_id: id, ...rest} = user;
-                    const others = omit(rest, ["password", "__v"]);
-                    return {
-                        id,
-                        ...others
-                    };
-                });
+                const payload = roles.map((role) => RoleService.briefRoleFormat(role));
                 res.json(payload);
             })
             .catch((error) => {
@@ -55,14 +47,8 @@ class RoleController {
 
     getRole(req, res) {
         RoleService.getRoleById(req.params.id)
-            .then((user) => {
-                const {_id: id, ...rest} = user;
-                const others = omit(rest, ["password", "__v"]);
-                const payload = {
-                    id,
-                    ...others
-                };
-                res.json(payload);
+            .then((role) => {
+                res.json(RoleService.briefRoleFormat(role));
             })
             .catch((error) => {
                 logger.error("getRole", error);
@@ -77,13 +63,7 @@ class RoleController {
     updateRole(req, res) {
         RoleService.updateRole(req.params.id, req.body)
             .then((role) => {
-                const {_id: id, ...rest} = role;
-                const others = omit(rest, ["password", "__v"]);
-                const payload = {
-                    id,
-                    ...others
-                };
-                res.json(payload);
+                res.json(RoleService.briefRoleFormat(role));
             })
             .catch((error) => {
                 logger.error("updateRole", error);
@@ -94,7 +74,6 @@ class RoleController {
                 });
             });
     }
-
 }
 
 export default RoleController;

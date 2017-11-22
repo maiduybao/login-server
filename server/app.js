@@ -16,6 +16,8 @@ import PassportService from "./services/passport";
 import AuthController from "./controllers/authController";
 import UserController from "./controllers/userController";
 import RoleAclController from "./controllers/roleConntroller";
+import MailReceiveController from "./controllers/MailReceiveController";
+
 
 const app = express();
 
@@ -112,6 +114,7 @@ class App {
         new AuthController(apiV1);
         new UserController(apiV1);
         new RoleAclController(apiV1);
+        new MailReceiveController(apiV1);
     }
 }
 

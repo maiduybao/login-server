@@ -1,7 +1,10 @@
 import log4js from "log4js";
-import omit from "lodash/omit";
+import randomstring from "randomstring";
+
 // services
 import UserService from "../services/userService";
+import EmailService from "../services/emailService";
+
 // middleware
 import authenticated from "../middleware/authenticated";
 import validate from "../middleware/validate";
@@ -30,18 +33,13 @@ class UserController {
         this.router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.registerUser);
         this.router.post("/users/register", validate(registerUserSchema), this.registerUser);
         this.router.put("/users/:id", authenticated, authorized("users:readwrite"), validate(updateUserSchema), this.updateUser);
+        this.router.get("/users/confirm/:token", this.registerConfirm);
     }
 
     getUser(req, res) {
         UserService.getUserById(req.params.id)
             .then((user) => {
-                const {_id: id, ...rest} = user;
-                const others = omit(rest, ["password", "__v"]);
-                const payload = {
-                    id,
-                    ...others
-                };
-                res.json(payload);
+                res.json(UserService.briefUserFormat(user));
             })
             .catch((error) => {
                 logger.error("getUser", error);
@@ -58,15 +56,7 @@ class UserController {
     getUsers(req, res) {
         UserService.getUsers()
             .then((users) => {
-                const payload = users.map((user) => {
-                    const {_id: id, ...rest} = user;
-                    const others = omit(rest, ["password", "__v"]);
-                    others.roles = others.roles.map((role) => role.name);
-                    return {
-                        id,
-                        ...others
-                    };
-                });
+                const payload = users.map((user) => UserService.briefUserFormat(user));
                 res.send(payload);
             })
             .catch((error) => {
@@ -84,14 +74,7 @@ class UserController {
     updateUser(req, res) {
         UserService.updateUser(req.params.id, req.body)
             .then((user) => {
-                const {_id: id, ...rest} = user;
-                const others = omit(rest, ["password", "__v"]);
-                others.roles = others.roles.map((role) => role.name);
-                const payload = {
-                    id,
-                    ...others
-                };
-                res.send(payload);
+                res.json(UserService.briefUserFormat(user));
             })
             .catch((error) => {
                 logger.error("updateUser", error);
@@ -109,10 +92,13 @@ class UserController {
         if (req.body.password === req.body.confirmPassword) {
             const registerUser = req.body;
             delete registerUser.confirmPassword;
+            registerUser.active = false;
+            registerUser.confirmToken = randomstring.generate(12);
             UserService.addUser(registerUser)
                 .then((user) => {
                     if (user) {
-                        res.status(201).json({id: user._id});
+                        EmailService.sendRegisterConfirmEmail(user);
+                        res.json({id: user._id});
                     } else {
                         // CONFLICT
                         res.status(409).json(
@@ -125,11 +111,10 @@ class UserController {
                 })
                 .catch((error) => {
                     logger.error("registerUser", error);
-                    // BAD REQUEST
-                    res.status(400).json(
+                    res.status(500).json(
                         {
-                            status: 400,
-                            message: "bad request"
+                            status: 500,
+                            message: error.message
                         }
                     );
                 });
@@ -142,6 +127,35 @@ class UserController {
             );
         }
 
+    }
+
+    registerConfirm(req, res) {
+        UserService.findOneAndUpdate({confirmToken: req.params.token}, {
+            active: true,
+            confirmToken: ""
+        })
+            .then((user) => {
+                if (user) {
+                    res.json(UserService.briefUserFormat(user));
+                } else {
+                    // NOT FOUND
+                    res.status(404).json(
+                        {
+                            status: 404,
+                            message: `${req.params.token} is not found in the system`
+                        }
+                    );
+                }
+            })
+            .catch((error) => {
+                logger.error("registerConfirm", error);
+                res.status(500).json(
+                    {
+                        status: 500,
+                        message: error.message
+                    }
+                );
+            });
     }
 }
 

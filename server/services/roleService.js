@@ -1,4 +1,5 @@
 import log4js from "log4js";
+import omit from "lodash/omit";
 
 import RoleModel from "../models/role";
 
@@ -57,6 +58,15 @@ class RoleService {
                 logger.error("addAllowToRole", error);
                 throw error;
             });
+    }
+
+    briefRoleFormat(role) {
+        const {_id: id, ...rest} = role;
+        const others = omit(rest, ["password", "__v"]);
+        return {
+            id,
+            ...others
+        };
     }
 }
 

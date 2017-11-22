@@ -17,7 +17,7 @@ export default (passport) => {
     passport.use(new Strategy(opts, (payload, done) => {
         UserService.getUserById(payload.user.id)
             .then((user) => {
-                if (user) {
+                if (user && user.active) {
                 //    user.roles = user.roles.map((role) => role.name);
                     done(null, user);
                 } else {
@@ -37,7 +37,7 @@ export default (passport) => {
         let foundUser = null;
         UserService.getUserByEmail(email)
             .then((user) => {
-                if (user) {
+                if (user && user.active) {
                     foundUser = user;
                     return UserService.comparePassword(password || "", user.password);
                 }
