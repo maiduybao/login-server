@@ -24,44 +24,51 @@ class AuthController {
         const promise = UserService.getUserByEmail(req.body.email);
         promise
             .then((user) => {
-                UserService.comparePassword(req.body.password, user.password)
-                    .then((isMatched) => {
-                        if (isMatched) {
-                            if (user.active) {
-                                logger.info("user", JSON.stringify(user));
-                                const token = jwt.sign({user: UserService.briefUserFormat(user)}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
-                                res.status(200).json({
-                                    accessToken: token,
-                                    tokenType: "Bearer"
-                                });
+                if (user) {
+                    UserService.comparePassword(req.body.password, user.password)
+                        .then((isMatched) => {
+                            if (isMatched) {
+                                if (user.active) {
+                                    logger.info("user", JSON.stringify(user));
+                                    const token = jwt.sign({user: UserService.briefUserFormat(user)}, jwtConfig.secretKey, {expiresIn: jwtConfig.tokenExpires});
+                                    res.status(200).json({
+                                        accessToken: token,
+                                        tokenType: "Bearer"
+                                    });
+                                } else {
+                                    res.status(400).json({
+                                        status: 400,
+                                        message: "you need to activate your profile"
+                                    });
+                                }
                             } else {
-                                res.status(404).json({
-                                    status: 404,
-                                    message: "you need to activate your profile"
+                                res.status(400).json({
+                                    status: 400,
+                                    message: "Invalid email/password combination"
                                 });
                             }
-                        } else {
-                            // NOT FOUND
-                            res.status(404).json({
-                                status: 404,
+                        })
+                        .catch((error) => {
+                            logger.error("authenticate", error);
+                            res.status(400).json({
+                                status: 400,
                                 message: "Invalid email/password combination"
                             });
-                        }
-                    })
-                    .catch((error) => {
-                        logger.error("authenticate", error);
-                        res.status(404).json({
-                            status: 404,
-                            message: "Invalid email/password combination"
                         });
+                } else {
+                    // BAD REQUEST
+                    res.status(400).json({
+                        status: 400,
+                        message: "Invalid email/password combination"
                     });
+                }
             })
             .catch((error) => {
                 logger.error("authenticate", error);
-                // NOT FOUND
-                res.status(404).json({
-                    status: 404,
-                    message: "Email does not exist"
+                // INTERNAL ERROR
+                res.status(500).json({
+                    status: 500,
+                    message: error.message
                 });
             });
     }

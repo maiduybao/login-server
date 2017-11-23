@@ -131,7 +131,7 @@ class UserController {
     registerConfirm(req, res) {
         UserService.findOneAndUpdate({confirmToken: req.params.token}, {
             active: true,
-            confirmToken: null
+            confirmToken: undefined
         })
             .then((user) => {
                 if (user) {
