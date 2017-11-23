@@ -97,17 +97,16 @@ class UserController {
             UserService.addUser(registerUser)
                 .then((user) => {
                     if (user) {
-                        EmailService.sendRegisterConfirmEmail(user);
                         res.json({id: user._id});
-                    } else {
-                        // CONFLICT
-                        res.status(409).json(
-                            {
-                                status: 409,
-                                message: "email is already exist"
-                            }
-                        );
+                        return EmailService.sendRegisterConfirmEmail(user);
                     }
+                    // CONFLICT
+                    res.status(409).json(
+                        {
+                            status: 409,
+                            message: "email is already exist"
+                        }
+                    );
                 })
                 .catch((error) => {
                     logger.error("registerUser", error);
