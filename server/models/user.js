@@ -44,9 +44,15 @@ const UserSchema = new Schema({
     },
     confirmToken: {
         type: Schema.Types.String,
-        default: ""
+        set: (value) => {
+            if (value === null) {
+                return undefined;
+            }
+            return value;
+        }
     }
 }, {timestamps: true});
+
 
 const genSalt = RSVP.denodeify(BCRYPT.genSalt);
 const genHash = RSVP.denodeify(BCRYPT.hash);
