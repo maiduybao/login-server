@@ -36,7 +36,7 @@
     }
   },
   "jwt": {
-    "secretKey": "hqF65AiumUo=",
+    "secretKey": "JWT_SECRET_KEY",
     "tokenExpires": "1 days"
   },
   "mailgun": {
