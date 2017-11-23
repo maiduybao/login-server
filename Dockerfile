@@ -14,8 +14,13 @@ RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
 
+RUN cd bin && ./populate.sh
+
+RUN cd ..
+
 # Bundle app source
 COPY . /usr/src/server-login
+
 
 EXPOSE 3000
 CMD [ "npm", "run", "start:dev" ]
