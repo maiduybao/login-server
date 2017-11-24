@@ -9,7 +9,6 @@ const logger = log4js.getLogger("EmailService");
 class EmailService {
     sendRegisterConfirmEmail(newUser) {
         logger.info("sendRegisterConfirmEmail", "Send Register Confirm Email");
-        logger.info("api key", mailConfig.apiKey);
         const mailgun = MailGun({
             apiKey: mailConfig.apiKey,
             domain: mailConfig.domain

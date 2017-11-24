@@ -42,15 +42,7 @@ const UserSchema = new Schema({
         type: Schema.Types.Boolean,
         default: false
     },
-    confirmToken: {
-        type: Schema.Types.String,
-        set: (value) => {
-            if (value === null) {
-                return undefined;
-            }
-            return value;
-        }
-    }
+    confirmToken: {type: Schema.Types.String}
 }, {timestamps: true});
 
 
