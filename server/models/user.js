@@ -2,7 +2,7 @@ import mongoose, {Schema} from "mongoose";
 
 import BCRYPT from "bcrypt";
 import RSVP from "rsvp";
-import RoleAclModel from "./role";
+import RoleModel from "./role";
 import log4js from "log4js";
 
 const logger = log4js.getLogger("models.user");
@@ -59,7 +59,7 @@ UserSchema.pre("save", function (next) {
             .then((hash) => {
                 this.password = hash;
                 if (this.roles.length === 0) {
-                    RoleAclModel.findOne({name: "Client"})
+                    RoleModel.findOne({name: "Client"})
                         .lean()
                         .exec()
                         .then((role) => {
@@ -67,7 +67,7 @@ UserSchema.pre("save", function (next) {
                             next();
                         })
                         .catch((error) => {
-                            logger.error("RoleAclModel", error);
+                            logger.error("RoleModel", error);
                             throw error;
                         });
                 } else {
