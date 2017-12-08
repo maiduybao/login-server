@@ -11,16 +11,18 @@
     "start:dev": "nodemon --exec npm run babel-node -- ./dist/server.min.js",
     "lint": "eslint --ext .js server/",
     "build": "webpack -p",
-    "fix": "eslint --fix --debug --ext .js server/"
+    "fix": "eslint --fix --debug --ext .js server/",
+    "standard": "standard server/*.js",
+    "standard-fix": "standard --fix server/*.js"
   },
   "dependencies": {
-    "ajv": "^5.3.0",
+    "ajv": "^5.5.1",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "debug": "^2.6.9",
-    "email-templates": "^3.1.7",
+    "email-templates": "^3.1.8",
     "express": "^4.16.2",
     "handlebars": "^4.0.11",
     "hbs": "^4.0.1",
@@ -28,12 +30,11 @@
     "lodash": "^4.17.4",
     "log4js": "^2.3.12",
     "mailgun-js": "^0.13.1",
-    "mongoose": "^4.13.4",
+    "mongoose": "^4.13.6",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^3.0.1",
     "randomstring": "^1.1.5",
-    "rsvp": "^4.7.0",
     "serve-favicon": "^2.4.5",
     "swagger-tools": "^0.10.3"
   },
@@ -45,12 +46,13 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
     "clean-webpack-plugin": "^0.1.17",
-    "copy-webpack-plugin": "^4.2.1",
-    "eslint": "^4.11.0",
+    "copy-webpack-plugin": "^4.2.3",
+    "eslint": "^4.12.1",
     "eslint-loader": "^1.9.0",
     "file-loader": "^0.11.2",
-    "uglifyjs-webpack-plugin": "^1.1.0",
-    "webpack": "^3.8.1",
+    "standard": "^10.0.3",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.10.0",
     "webpack-node-externals": "^1.6.0"
   }
 }

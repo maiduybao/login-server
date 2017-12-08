@@ -1,6 +1,5 @@
 import log4js from "log4js";
 import bcrypt from "bcrypt";
-import RSVP from "rsvp";
 import omit from "lodash/omit";
 
 import UserModel from "../models/user";
@@ -70,14 +69,14 @@ class UserService {
     }
 
     comparePassword(password, hash) {
-        const defer = RSVP.defer("comparePassword");
-        bcrypt.compare(password, hash, (error, isMatched) => {
-            if (error) {
-                defer.reject(error);
-            }
-            defer.resolve(isMatched);
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, hash, (error, isMatched) => {
+                if (error) {
+                    reject(error);
+                }
+                resolve(isMatched);
+            });
         });
-        return defer.promise;
     }
 
     findOneAndUpdate(criteria, update) {

@@ -1,12 +1,11 @@
 import mongoose, {Schema} from "mongoose";
 
 import BCRYPT from "bcrypt";
-import RSVP from "rsvp";
 import RoleModel from "./role";
 import log4js from "log4js";
+import util from "util";
 
 const logger = log4js.getLogger("models.user");
-mongoose.Promise = RSVP.Promise;
 
 const UserSchema = new Schema({
     email: {
@@ -45,10 +44,8 @@ const UserSchema = new Schema({
     confirmToken: {type: Schema.Types.String}
 }, {timestamps: true});
 
-
-const genSalt = RSVP.denodeify(BCRYPT.genSalt);
-const genHash = RSVP.denodeify(BCRYPT.hash);
-
+const genSalt = util.promisify(BCRYPT.genSalt);
+const genHash = util.promisify(BCRYPT.hash);
 
 // Save user hash password when password is new or modified
 UserSchema.pre("save", function (next) {

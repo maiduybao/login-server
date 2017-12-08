@@ -5,7 +5,6 @@ import log4js from "log4js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import RSVP from "rsvp";
 import passport from "passport";
 import CORS from "cors";
 // app configs
@@ -22,7 +21,7 @@ import MailReceiveController from "./controllers/MailReceiveController";
 const app = express();
 
 class App {
-    constructor() {
+    start() {
         this.initLogger();
         this.initViewEngine();
         this.initExpressMiddleware();
@@ -38,7 +37,7 @@ class App {
         const logger = log4js.getLogger("mongodb");
         logger.level = "info";
         // set promise for mongodb
-        mongoose.Promise = RSVP.Promise;
+        mongoose.Promise = global.Promise;
         // mongodb connection
         mongoose.connect(dbConfig.uri, dbConfig.options)
             .then(() => {
@@ -111,13 +110,14 @@ class App {
         const apiV1 = Router();
         apiRouter.use("/v1", apiV1);
 
-        new AuthController(apiV1);
-        new UserController(apiV1);
-        new RoleAclController(apiV1);
-        new MailReceiveController(apiV1);
+        AuthController.urlMapping(apiV1);
+        UserController.urlMapping(apiV1);
+        RoleAclController.urlMapping(apiV1);
+        MailReceiveController.urlMapping(apiV1);
     }
 }
 
-new App();
+const loginApp = new App();
+loginApp.start();
 
 export default app;

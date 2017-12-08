@@ -8,16 +8,8 @@ import credentialSchema from "../jsonschema/authentication.json";
 const logger = log4js.getLogger("AuthController");
 
 class AuthController {
-    constructor(router) {
-        this.router = router;
-        this.urlMapping();
-    }
-
-    /*
-    baseUrl: /api/v1
-   */
-    urlMapping() {
-        this.router.post("/oauth/authenticate", validate(credentialSchema), this.authenticate);
+    urlMapping(router) {
+        router.post("/oauth/authenticate", validate(credentialSchema), this.authenticate);
     }
 
     authenticate(req, res) {
@@ -74,4 +66,4 @@ class AuthController {
     }
 }
 
-export default AuthController;
+export default new AuthController();

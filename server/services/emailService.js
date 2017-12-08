@@ -1,6 +1,5 @@
 import log4js from "log4js";
 import MailGun from "mailgun-js";
-import RSVP from "rsvp";
 
 import {mailConfig} from "../config";
 
@@ -19,16 +18,18 @@ class EmailService {
             subject: "Welcome to login demo",
             text: `Thank you for registering. Please use the token below to activate your profile.\nToken:${newUser.confirmToken}`
         };
-        const defer = RSVP.defer("sendRegisterConfirmEmail");
-        mailgun.messages().send(message, (error, body) => {
-            if (error) {
-                logger.error("sendRegisterConfirmEmail", error);
-                defer.reject(error);
-            } else {
-                defer.resolve(body);
-            }
+
+        return new Promise((resolve, reject) => {
+            mailgun.messages().send(message, (error, body) => {
+                if (error) {
+                    logger.error("sendRegisterConfirmEmail", error);
+                    reject(error);
+                } else {
+                    resolve(body);
+                }
+            });
+
         });
-        return defer;
     }
 }
 

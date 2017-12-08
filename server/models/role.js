@@ -1,9 +1,4 @@
 import mongoose, {Schema} from "mongoose";
-// import arrayUniquePlugin from "mongoose-unique-array";
-
-import RSVP from "rsvp";
-
-mongoose.Promise = RSVP.Promise;
 
 const RoleSchema = new Schema({
     name: {

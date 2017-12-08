@@ -14,18 +14,10 @@ const logger = log4js.getLogger("RoleController");
 
 
 class RoleController {
-    constructor(router) {
-        this.router = router;
-        this.urlMapping();
-    }
-
-    /*
-    baseUrl: /api/v1
-    */
-    urlMapping() {
-        this.router.get("/roles", authenticated, authorized("roles:list"), this.getRoles);
-        this.router.get("/users/:id", authenticated, authorized("roles:read"), this.getRole);
-        this.router.put("/roles/:id", authenticated, authorized("roles:readwrite"), validate(updateRoleSchema), this.updateRole);
+    urlMapping(router) {
+        router.get("/roles", authenticated, authorized("roles:list"), this.getRoles);
+        router.get("/users/:id", authenticated, authorized("roles:read"), this.getRole);
+        router.put("/roles/:id", authenticated, authorized("roles:readwrite"), validate(updateRoleSchema), this.updateRole);
     }
 
     getRoles(req, res) {
@@ -76,4 +68,4 @@ class RoleController {
     }
 }
 
-export default RoleController;
+export default new RoleController();

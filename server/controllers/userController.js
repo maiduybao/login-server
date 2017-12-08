@@ -18,22 +18,13 @@ import updateUserSchema from "../jsonschema/updateUser.json";
 const logger = log4js.getLogger("UserController");
 
 class UserController {
-
-    constructor(router) {
-        this.router = router;
-        this.urlMapping();
-    }
-
-    /*
-    baseUrl: /api/v1
-    */
-    urlMapping() {
-        this.router.get("/users", authenticated, authorized("users:list"), this.getUsers);
-        this.router.get("/users/:id", authenticated, authorized("users:read"), this.getUser);
-        this.router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.registerUser);
-        this.router.post("/users/register", validate(registerUserSchema), this.registerUser);
-        this.router.put("/users/:id", authenticated, authorized("users:readwrite"), validate(updateUserSchema), this.updateUser);
-        this.router.get("/users/confirm/:token", this.registerConfirm);
+    urlMapping(router) {
+        router.get("/users", authenticated, authorized("users:list"), this.getUsers);
+        router.get("/users/:id", authenticated, authorized("users:read"), this.getUser);
+        router.post("/users", authenticated, authorized("users:readwrite"), validate(addUserSchema), this.registerUser);
+        router.post("/users/register", validate(registerUserSchema), this.registerUser);
+        router.put("/users/:id", authenticated, authorized("users:readwrite"), validate(updateUserSchema), this.updateUser);
+        router.get("/users/confirm/:token", this.registerConfirm);
     }
 
     getUser(req, res) {
@@ -158,4 +149,4 @@ class UserController {
     }
 }
 
-export default UserController;
+export default new UserController();
