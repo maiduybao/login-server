@@ -1,6 +1,7 @@
 import express, {Router} from "express";
 import path from "path";
 // import favicon from "serve-favicon";
+// noinspection ES6CheckImport
 import log4js from "log4js";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
