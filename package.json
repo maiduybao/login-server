@@ -35,7 +35,7 @@
     "passport-http": "^0.3.0",
     "passport-jwt": "^3.0.1",
     "randomstring": "^1.1.5",
-    "serve-favicon": "^2.4.5",
+    "serve-favicon": "^2.5.0",
     "swagger-tools": "^0.10.3"
   },
   "devDependencies": {
@@ -53,6 +53,6 @@
     "standard": "^10.0.3",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^3.11.0",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.7.2"
   }
 }
